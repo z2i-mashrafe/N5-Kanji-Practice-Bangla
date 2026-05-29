@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0f">
+<title>N5 Kanji — z2i_Mashrafe</title>
+<style>
+/* ── MOCK TEST EXTRA STYLES ── */
+.mt-lvl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.mt-lvl-card{
+  background:var(--surf);border:1.5px solid var(--bdr);border-radius:var(--rsm);
+  padding:10px 6px 8px;text-align:center;cursor:pointer;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.mt-lvl-card:active{transform:scale(.95);}
+.mt-lvl-card.unlocked{border-color:var(--gold);cursor:pointer;}
+.mt-lvl-card.unlocked:hover{background:var(--goldf);}
+.mt-lvl-card.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.5);}
+.mt-lvl-card.completed{border-color:var(--green);}
+.mt-lvl-card.completed:hover{background:var(--greenf);}
+.mt-lvl-num{font-family:var(--jp);font-size:22px;font-weight:900;color:var(--text);line-height:1;}
+.mt-lvl-lbl{font-size:9px;color:var(--muted);margin-top:2px;}
+.mt-lvl-score{font-size:9px;margin-top:3px;font-weight:700;}
+.mt-lvl-lock{font-size:18px;margin-bottom:2px;}
+.mt-lvl-bar{height:3px;background:var(--bdr);border-radius:2px;margin-top:5px;overflow:hidden;}
+.mt-lvl-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .5s;}
+.mt-lvl-bar-fill.green{background:linear-gradient(90deg,#1a9a4a,var(--green));}
+/* question sentence display */
+.mt-sentence{
+  font-family:var(--jp);font-size:22px;font-weight:700;
+  line-height:1.8;color:var(--text);margin-bottom:14px;
+  background:var(--surf2);border-radius:var(--rsm);padding:14px 12px;
+  border:1px solid var(--bdr);text-align:center;
+}
+.mt-sentence .target{
+  color:var(--gold);border-bottom:2px solid var(--gold);
+  padding:0 2px;
+}
+.mt-q-type{
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:8px;
+}
+.mt-q-type.reading{background:var(--goldf);color:var(--gold);border:1px solid rgba(240,192,64,.25);}
+.mt-q-type.kanji{background:var(--tealf);color:var(--teal);border:1px solid rgba(48,192,176,.25);}
+.mt-opt-text{font-family:var(--jp);font-size:17px;font-weight:700;color:var(--text);}
+/* result summary */
+.mt-summary{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:20px 16px;text-align:center;}
+.mt-summary .rbig{font-size:52px;margin-bottom:6px;}
+.mt-pct{font-family:var(--jp);font-size:48px;font-weight:900;line-height:1;margin-bottom:4px;}
+.mt-pct.pass{color:var(--green);}
+.mt-pct.fail{color:var(--red);}
+.mt-unlock-msg{
+  font-size:12px;padding:8px 14px;border-radius:var(--rxs);margin-top:10px;margin-bottom:14px;
+}
+.mt-unlock-msg.pass{background:var(--greenf);border:1px solid rgba(64,192,112,.22);color:#80e8a8;}
+.mt-unlock-msg.fail{background:var(--redf);border:1px solid rgba(224,80,80,.2);color:#f0a0a0;}
+/* progress header */
+.mt-hdr{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rsm);padding:10px 14px;margin-bottom:11px;display:flex;align-items:center;gap:10px;}
+.mt-hdr-lvl{font-family:var(--jp);font-size:28px;font-weight:900;color:var(--gold);}
+.mt-hdr-info{flex:1;}
+.mt-hdr-title{font-size:12px;font-weight:700;color:var(--text);}
+.mt-hdr-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Noto+Serif+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0a0a0f;--surf:#13131f;--surf2:#1c1c2e;--surf3:#252538;
+  --bdr:#2a2a45;--bdr2:#3a3a58;
+  --gold:#f0c040;--gold2:#c8960a;--goldf:rgba(240,192,64,.12);
+  --red:#e05050;--redf:rgba(224,80,80,.1);
+  --green:#40c070;--greenf:rgba(64,192,112,.1);
+  --purple:#9060d0;--purplef:rgba(144,96,208,.12);
+  --teal:#30c0b0;--tealf:rgba(48,192,176,.1);
+  --text:#e8e0d8;--muted:#6868a0;--light:#a8a0c0;
+  --nav-h:56px;--bot-h:64px;
+  --r:16px;--rsm:12px;--rxs:8px;
+  --bn:'Noto Serif Bengali',serif;
+  --jp:'Noto Sans JP',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{height:100%;scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--bn);
+  min-height:100dvh;
+  padding-top:var(--nav-h);
+  padding-bottom:calc(var(--bot-h) + env(safe-area-inset-bottom,0px));
+  overscroll-behavior:none;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 40% at 10% 10%,rgba(90,60,150,.07) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 90%,rgba(48,192,176,.04) 0%,transparent 60%);
+}
+.wm{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.wm::before{
+  content:'z2i_mash z2i_mash z2i_mash z2i_mash z2i_mash z2i_mash z2i_mash z2i_mash z2i_mash z2i_mash z2i_mash z2i_mash';
+  position:absolute;top:-60px;left:-80px;width:200%;height:200%;
+  font-family:var(--jp);font-size:13px;font-weight:700;letter-spacing:.4em;
+  color:rgba(240,192,64,.018);word-spacing:50px;line-height:5.5em;
+  transform:rotate(-25deg);
+}
+
+/* ── TOP NAV ── */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h);
+  background:rgba(10,10,15,.97);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;padding:0 16px;gap:10px;
+}
+.nav-logo{
+  font-family:var(--jp);font-size:26px;font-weight:900;
+  background:linear-gradient(135deg,var(--gold),#ffe880,var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  flex-shrink:0;
+}
+.nav-title{
+  font-size:13px;font-weight:600;color:var(--light);flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.nav-badge{
+  font-family:var(--jp);font-size:8px;letter-spacing:.12em;
+  color:var(--gold);background:var(--goldf);
+  border:1px solid rgba(240,192,64,.2);
+  padding:3px 9px;border-radius:20px;flex-shrink:0;
+}
+.nav-socials{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.nsoc{
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:#fff;text-decoration:none;
+  transition:transform .18s,opacity .18s;flex-shrink:0;
+}
+.nsoc:active{transform:scale(.9);}
+.nsoc:hover{opacity:.85;transform:scale(1.08);}
+.nsoc-fb{background:#18181f;border:1px solid #2a2a3a;}
+.nsoc-ig{background:#18181f;border:1px solid #2a2a3a;}
+.nsoc-x{background:#18181f;border:1px solid #2a2a3a;}
+.nsoc-gh{background:#18181f;border:1px solid #2a2a3a;}
+
+/* ── BOTTOM NAV ── */
+.bot-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  height:var(--bot-h);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  background:rgba(10,10,15,.97);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--bdr);
+  display:grid;grid-template-columns:repeat(4,1fr);
+}
+.bnav-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:8px 4px 10px;
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);transition:color .2s;position:relative;
+}
+.bnav-btn.active{color:var(--gold);}
+.bnav-btn.active::after{
+  content:'';position:absolute;top:0;left:20%;right:20%;
+  height:2px;background:var(--gold);border-radius:0 0 2px 2px;
+}
+.bnav-icon{width:28px;height:28px;line-height:1;display:flex;align-items:center;justify-content:center;}
+.bnav-icon svg{width:28px;height:28px;transition:transform .2s;}
+.bnav-btn.active .bnav-icon svg{transform:scale(1.15);}
+.bnav-lbl{font-size:8px;line-height:1;font-family:var(--bn);letter-spacing:.01em;}
+
+/* ── PAGES ── */
+.page{display:none;position:relative;z-index:2;}
+.page.active{display:block;}
+.wrap{max-width:480px;margin:0 auto;padding:14px 13px 20px;}
+
+/* ── PAGE HEADER ── */
+.phdr{text-align:center;padding:12px 0 16px;margin-bottom:12px;border-bottom:1px solid var(--bdr);}
+.phdr-jp{
+  font-family:var(--jp);font-size:54px;font-weight:900;line-height:1;margin-bottom:6px;
+  background:linear-gradient(135deg,var(--gold),#fff4c0,var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.phdr-jp.teal{background:linear-gradient(135deg,var(--teal),#a0ede4,#1a8a80);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.phdr-jp.purple{background:linear-gradient(135deg,var(--purple),#c8a0ff,#7040b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.phdr-ttl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:3px;}
+.phdr-sub{font-size:11px;color:var(--muted);}
+.phdr-by{
+  display:inline-block;margin-top:9px;
+  font-family:var(--jp);font-size:9px;letter-spacing:.16em;
+  color:var(--gold);background:var(--goldf);
+  border:1px solid rgba(240,192,64,.2);padding:3px 12px;border-radius:20px;
+}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:11px;}
+.sbox{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rsm);padding:8px 3px;text-align:center;}
+.sv{font-family:var(--jp);font-size:20px;font-weight:700;line-height:1;margin-bottom:2px;}
+.sl{font-size:9px;color:var(--muted);}
+
+/* ── MODE BAR ── */
+.mode-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:11px;}
+.mbtn{
+  padding:10px 4px;background:var(--surf);border:1.5px solid var(--bdr);
+  border-radius:var(--rsm);color:var(--muted);cursor:pointer;
+  font-family:var(--jp);font-size:11px;text-align:center;
+  transition:all .18s;min-height:44px;
+  display:flex;align-items:center;justify-content:center;
+}
+.mbtn.active{background:var(--goldf);border-color:var(--gold);color:var(--gold);}
+
+/* ── GAME CARD ── */
+.gcard{
+  background:var(--surf);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:18px 14px;
+  margin-bottom:11px;text-align:center;position:relative;overflow:hidden;
+}
+.gcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold2),var(--gold),var(--gold2));}
+.gcard.teal{border-color:rgba(48,192,176,.2);}
+.gcard.teal::before{background:linear-gradient(90deg,#1a7a74,var(--teal),#1a7a74);}
+
+/* progress */
+.pwrap{display:flex;align-items:center;gap:8px;margin-bottom:13px;}
+.pbar{flex:1;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));border-radius:2px;transition:width .4s;}
+.pfill.teal{background:linear-gradient(90deg,#1a7a74,var(--teal));}
+.ptxt{font-family:var(--jp);font-size:10px;color:var(--muted);white-space:nowrap;}
+
+/* display */
+.qlbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.kbig{font-family:var(--jp);font-size:96px;font-weight:900;line-height:1;color:var(--text);margin-bottom:6px;transition:all .3s;}
+.kbig.shake{animation:shake .4s ease;}
+.kbig.pop{animation:pop .3s ease;color:var(--green);}
+.kana-big{font-family:var(--jp);font-size:54px;font-weight:900;line-height:1;color:var(--text);margin-bottom:4px;transition:all .3s;}
+.kana-big.shake{animation:shake .4s ease;}
+.kana-big.pop{animation:pop .3s ease;}
+.kana-roma{font-family:var(--jp);font-size:13px;color:var(--muted);margin-bottom:14px;}
+.khint{font-family:var(--jp);font-size:15px;color:var(--muted);margin-bottom:13px;}
+.comp-big{font-family:var(--jp);font-size:74px;font-weight:900;line-height:1;color:var(--text);margin-bottom:5px;transition:all .3s;letter-spacing:.04em;}
+.comp-big.shake{animation:shake .4s ease;}
+.comp-big.pop{animation:pop .3s ease;color:var(--green);}
+.comp-kana{font-family:var(--jp);font-size:18px;color:var(--teal);margin-bottom:3px;}
+.comp-roma{font-family:var(--jp);font-size:12px;color:var(--muted);margin-bottom:16px;}
+
+/* options */
+.ogrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.opt{
+  background:var(--surf2);border:1.5px solid var(--bdr);
+  border-radius:var(--rsm);padding:14px 8px;
+  cursor:pointer;transition:border-color .18s,background .18s;
+  text-align:center;position:relative;
+  min-height:54px;display:flex;align-items:center;justify-content:center;
+}
+.opt:active:not(:disabled){transform:scale(.96);}
+.opt:disabled{cursor:default;}
+.opt.correct{border-color:var(--green);background:var(--greenf);}
+.opt.wrong{border-color:var(--red);background:var(--redf);}
+.opt-jp{font-family:var(--jp);font-size:38px;font-weight:700;color:var(--text);}
+.opt-kana{font-family:var(--jp);font-size:16px;font-weight:700;color:var(--text);}
+.opt-txt{font-size:13px;font-weight:700;color:var(--text);line-height:1.4;}
+.opt-tick{position:absolute;top:5px;right:7px;font-size:12px;opacity:0;}
+.opt.correct .opt-tick{opacity:1;}
+
+/* feedback */
+.fb{margin-top:11px;padding:10px 12px;border-radius:var(--rxs);font-size:12px;line-height:1.7;display:none;}
+.fb.show{display:block;animation:fadeIn .25s ease;}
+.fb-ok{background:var(--greenf);border:1px solid rgba(64,192,112,.22);color:#80e8a8;}
+.fb-no{background:var(--redf);border:1px solid rgba(224,80,80,.2);color:#f0a0a0;}
+
+/* next */
+.nbtn{
+  width:100%;margin-top:11px;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:var(--bg);border:none;border-radius:var(--rsm);
+  padding:14px;font-size:14px;font-weight:700;
+  cursor:pointer;display:none;min-height:48px;
+}
+.nbtn.show{display:block;animation:fadeIn .25s ease;}
+.nbtn:active{opacity:.87;}
+.nbtn.teal{background:linear-gradient(135deg,#1a7a74,var(--teal));}
+
+/* ── RESULT ── */
+.result{display:none;text-align:center;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:28px 18px;}
+.result.show{display:block;animation:fadeIn .35s ease;}
+.rbig{font-size:62px;line-height:1;margin-bottom:8px;}
+.rtitle{font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.rsub{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.rscore{font-family:var(--jp);font-size:32px;font-weight:900;color:var(--gold);margin-bottom:5px;}
+.rdetail{font-size:11px;color:var(--light);margin-bottom:20px;line-height:1.8;}
+.rbtn{
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:var(--bg);border:none;border-radius:var(--rsm);
+  padding:13px 30px;font-size:14px;font-weight:700;cursor:pointer;min-height:48px;
+}
+
+/* ── REFERENCE ── */
+.ref{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rsm);padding:11px;margin-top:12px;}
+.ref-ttl{font-family:var(--jp);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.ref-ttl::after{content:'';flex:1;height:1px;background:var(--bdr);}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:4px;}
+.ri{background:var(--surf2);border:1px solid var(--bdr);border-radius:6px;padding:6px 4px;text-align:center;cursor:pointer;transition:border-color .15s,transform .15s;}
+.ri:active{border-color:var(--purple);transform:scale(.94);}
+.ri-k{font-family:var(--jp);font-size:19px;font-weight:700;color:var(--text);}
+.ri-r{font-family:var(--jp);font-size:7px;color:var(--muted);margin-top:1px;}
+.ri-m{font-size:7.5px;color:var(--light);margin-top:1px;}
+.cref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:5px;}
+.cri{background:var(--surf2);border:1px solid var(--bdr);border-left:3px solid var(--teal);border-radius:0 7px 7px 0;padding:7px 8px;cursor:pointer;transition:border-color .15s,transform .15s;}
+.cri:active{border-color:var(--teal);transform:scale(.96);}
+.cri-k{font-family:var(--jp);font-size:20px;font-weight:700;color:var(--text);}
+.cri-r{font-family:var(--jp);font-size:8px;color:var(--teal);margin-top:1px;}
+.cri-m{font-size:9px;color:var(--light);margin-top:2px;font-weight:600;}
+
+/* ── RADICAL PAGE ── */
+.rad-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px;}
+.rstat{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rsm);padding:9px 5px;text-align:center;}
+.rstat-v{font-family:var(--jp);font-size:22px;font-weight:700;color:var(--purple);}
+.rstat-l{font-size:9px;color:var(--muted);margin-top:2px;}
+.rad-search{
+  width:100%;background:var(--surf);border:1.5px solid var(--bdr);
+  border-radius:var(--rsm);padding:11px 14px;
+  color:var(--text);font-size:14px;
+  margin-bottom:11px;outline:none;transition:border-color .2s;min-height:48px;
+}
+.rad-search:focus{border-color:var(--purple);}
+.rad-search::placeholder{color:var(--muted);}
+.rad-filter{
+  display:flex;gap:6px;margin-bottom:12px;
+  overflow-x:auto;padding-bottom:3px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.rad-filter::-webkit-scrollbar{display:none;}
+.rfbtn{
+  background:var(--surf);border:1px solid var(--bdr);
+  border-radius:20px;padding:7px 13px;
+  font-family:var(--jp);font-size:13px;color:var(--muted);
+  cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0;min-height:36px;
+}
+.rfbtn.active{background:var(--purplef);border-color:var(--purple);color:var(--purple);}
+.rfbtn:active{opacity:.8;}
+.rad-group{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rsm);margin-bottom:7px;overflow:hidden;}
+.rad-ghdr{
+  display:flex;align-items:center;gap:9px;padding:11px 12px;
+  cursor:pointer;transition:background .18s;user-select:none;
+}
+.rad-ghdr:active{background:var(--surf2);}
+.rad-ghdr.open{background:rgba(144,96,208,.07);border-bottom:1px solid var(--bdr);}
+.rad-sym{font-family:var(--jp);font-size:28px;font-weight:900;min-width:36px;text-align:center;line-height:1;}
+.rad-nw{flex:1;min-width:0;}
+.rad-nm{font-family:var(--jp);font-size:12px;font-weight:700;color:var(--text);line-height:1.3;}
+.rad-nm-bn{font-size:10px;color:var(--muted);margin-top:1px;}
+.rad-cnt{font-family:var(--jp);font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
+.rad-chev{font-size:10px;color:var(--muted);transition:transform .22s;flex-shrink:0;}
+.rad-ghdr.open .rad-chev{transform:rotate(90deg);}
+.rad-body{display:none;padding:10px 10px 12px;animation:fadeIn .2s ease;}
+.rad-body.open{display:block;}
+.rad-kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:5px;}
+.rk{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--rxs);padding:8px 4px;text-align:center;cursor:pointer;transition:border-color .15s,transform .15s;}
+.rk:active{border-color:var(--purple);transform:scale(.94);}
+.rk:hover{border-color:var(--bdr2);}
+.rk-k{font-family:var(--jp);font-size:28px;font-weight:900;color:var(--text);line-height:1.1;}
+.rk-r{font-family:var(--jp);font-size:7.5px;color:var(--teal);margin-top:2px;line-height:1.4;}
+.rk-m{font-size:8.5px;color:var(--light);margin-top:2px;font-weight:600;}
+.rad-note{
+  font-size:11px;color:var(--muted);
+  padding:8px 10px;background:rgba(144,96,208,.05);
+  border-radius:7px;margin-top:8px;line-height:1.7;
+  border-left:2px solid var(--purple);
+}
+
+/* ── KANJI DETAIL MODAL ── */
+.kmodal-backdrop{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  animation:fadeIn .2s ease;
+}
+.kmodal-backdrop.hide{display:none;}
+.kmodal{
+  background:var(--surf);border:1px solid var(--bdr2);
+  border-radius:20px;width:100%;max-width:320px;
+  padding:24px 20px 20px;text-align:center;position:relative;
+  animation:modalPop .22s ease;
+}
+@keyframes modalPop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+.kmodal-close{
+  position:absolute;top:12px;right:14px;
+  background:var(--surf2);border:1px solid var(--bdr);border-radius:8px;
+  color:var(--muted);font-size:16px;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.kmodal-k{
+  font-family:var(--jp);font-size:88px;font-weight:900;line-height:1;
+  margin-bottom:6px;
+}
+.kmodal-m{font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.kmodal-rows{display:flex;flex-direction:column;gap:8px;text-align:left;}
+.kmodal-row{
+  background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;
+  padding:9px 12px;display:flex;align-items:center;gap:10px;
+}
+.kmodal-tag{
+  font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 7px;border-radius:6px;white-space:nowrap;flex-shrink:0;min-width:46px;text-align:center;
+}
+.tag-kun{background:rgba(48,192,176,.12);color:var(--teal);border:1px solid rgba(48,192,176,.25);}
+.tag-on{background:rgba(240,192,64,.12);color:var(--gold);border:1px solid rgba(240,192,64,.25);}
+.tag-ro{background:rgba(144,96,208,.12);color:var(--purple);border:1px solid rgba(144,96,208,.25);}
+.kmodal-val{font-family:var(--jp);font-size:14px;font-weight:700;color:var(--text);line-height:1.5;}
+.kmodal-rad{
+  margin-top:12px;font-size:10px;color:var(--muted);
+  padding:7px 10px;background:rgba(144,96,208,.05);
+  border-radius:8px;border-left:2px solid var(--purple);text-align:left;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="wm"></div>
+
+<!-- KANJI DETAIL MODAL -->
+<div class="kmodal-backdrop hide" id="kmodal-bd" onclick="kmodalClose(event)">
+  <div class="kmodal" id="kmodal">
+    <div class="kmodal-close" onclick="kmodalHide()">✕</div>
+    <div class="kmodal-k" id="km-k"></div>
+    <div class="kmodal-m" id="km-m"></div>
+    <div class="kmodal-rows">
+      <div class="kmodal-row" id="km-kun-row">
+        <span class="kmodal-tag tag-kun">くんよみ</span>
+        <span class="kmodal-val" id="km-kun"></span>
+      </div>
+      <div class="kmodal-row" id="km-on-row">
+        <span class="kmodal-tag tag-on">おんよみ</span>
+        <span class="kmodal-val" id="km-on"></span>
+      </div>
+      <div class="kmodal-row">
+        <span class="kmodal-tag tag-ro">Romaji</span>
+        <span class="kmodal-val" id="km-ro"></span>
+      </div>
+    </div>
+    <div class="kmodal-rad" id="km-rad"></div>
+  </div>
+</div>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="nav-logo">漢字</div>
+  <div class="nav-badge">Z2I_MASHRAFE</div>
+  <div style="flex:1"></div>
+  <div class="nav-socials">
+    <a class="nsoc nsoc-fb" href="https://www.facebook.com/share/1GALRVmc9p/" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a class="nsoc nsoc-ig" href="https://www.instagram.com/z2i.mashrafe?igsh=dndqdTZvM2FpbGYz" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
+    <a class="nsoc nsoc-x" href="https://x.com/z2i_mashrafe" target="_blank" rel="noopener" title="X"><i class="fab fa-x-twitter"></i></a>
+    <a class="nsoc nsoc-gh" href="https://github.com/z2i-mashrafe" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+  </div>
+</nav>
+
+<!-- PAGE 1: RADICAL GROUPS (moved to first) -->
+<div class="page active" id="page1">
+<div class="wrap">
+  <div class="rad-stats">
+    <div class="rstat"><div class="rstat-v">২৪</div><div class="rstat-l">Groups</div></div>
+    <div class="rstat"><div class="rstat-v">১৩১</div><div class="rstat-l">মোট Kanji</div></div>
+    <div class="rstat"><div class="rstat-v" id="p3-oc">০</div><div class="rstat-l">খোলা আছে</div></div>
+  </div>
+  <input class="rad-search" type="search" id="p3-s"
+    placeholder="🔍 Kanji, Reading বা অর্থ খোঁজো..."
+    oninput="p3Search(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+  <div class="rad-filter" id="p3-filter"></div>
+  <div id="p3-groups"></div>
+</div>
+</div>
+
+<!-- PAGE 2: SINGLE KANJI -->
+<div class="page" id="page2">
+<div class="wrap">
+  <div class="stats">
+    <div class="sbox"><div class="sv" style="color:var(--gold)" id="p1-sc">0</div><div class="sl">স্কোর</div></div>
+    <div class="sbox"><div class="sv" style="color:var(--green)" id="p1-c">0</div><div class="sl">সঠিক ✅</div></div>
+    <div class="sbox"><div class="sv" style="color:var(--red)" id="p1-w">0</div><div class="sl">ভুল ❌</div></div>
+    <div class="sbox"><div class="sv" style="color:var(--purple)" id="p1-st">0</div><div class="sl">Streak 🔥</div></div>
+  </div>
+  <div class="mode-bar">
+    <button class="mbtn active" onclick="p1Mode('k2m')" id="p1m1">漢字→অর্থ</button>
+    <button class="mbtn" onclick="p1Mode('k2r')" id="p1m2">漢字→পড়া</button>
+    <button class="mbtn" onclick="p1Mode('kn2k')" id="p1m3">Kana→漢字</button>
+  </div>
+  <div id="p1-area">
+    <div class="gcard">
+      <div class="pwrap"><div class="pbar"><div class="pfill" id="p1-pb" style="width:0%"></div></div><div class="ptxt" id="p1-pt">1/20</div></div>
+      <div class="qlbl" id="p1-ql"></div>
+      <div class="kbig" id="p1-km" style="display:none"></div>
+      <div class="kana-big" id="p1-knm" style="display:none"></div>
+      <div class="kana-roma" id="p1-rom" style="display:none"></div>
+      <div class="khint" id="p1-kh" style="display:none"></div>
+      <div class="ogrid" id="p1-og"></div>
+      <div class="fb" id="p1-fb"></div>
+      <button class="nbtn" id="p1-nb" onclick="p1Next()">পরের প্রশ্ন →</button>
+    </div>
+  </div>
+  <div class="result" id="p1-res">
+    <div class="rbig" id="p1-re">🎉</div>
+    <div class="rtitle" id="p1-rt"></div>
+    <div class="rsub" id="p1-rs"></div>
+    <div class="rscore" id="p1-rsc"></div>
+    <div class="rdetail" id="p1-rd"></div>
+    <button class="rbtn" onclick="p1Restart()">আবার খেলো 🔄</button>
+  </div>
+  <div class="ref">
+    <div class="ref-ttl">📖 ১৩১টি N5 Kanji Reference</div>
+    <div class="ref-grid" id="p1-rg"></div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE 3: COMPOUND KANJI -->
+<div class="page" id="page3">
+<div class="wrap">
+  <div class="stats">
+    <div class="sbox" style="border-color:rgba(48,192,176,.2)"><div class="sv" style="color:var(--teal)" id="p2-sc">0</div><div class="sl">স্কোর</div></div>
+    <div class="sbox" style="border-color:rgba(48,192,176,.2)"><div class="sv" style="color:var(--green)" id="p2-c">0</div><div class="sl">সঠিক ✅</div></div>
+    <div class="sbox" style="border-color:rgba(48,192,176,.2)"><div class="sv" style="color:var(--red)" id="p2-w">0</div><div class="sl">ভুল ❌</div></div>
+    <div class="sbox" style="border-color:rgba(48,192,176,.2)"><div class="sv" style="color:var(--purple)" id="p2-st">0</div><div class="sl">Streak 🔥</div></div>
+  </div>
+  <div class="mode-bar">
+    <button class="mbtn active" style="border-color:var(--teal);color:var(--teal);background:var(--tealf)" onclick="p2Mode('c2m')" id="p2m1">二字→অর্থ</button>
+    <button class="mbtn" onclick="p2Mode('m2c')" id="p2m2">অর্থ→二字</button>
+    <button class="mbtn" onclick="p2Mode('c2r')" id="p2m3">二字→পড়া</button>
+  </div>
+  <div id="p2-area">
+    <div class="gcard teal">
+      <div class="pwrap"><div class="pbar"><div class="pfill teal" id="p2-pb" style="width:0%"></div></div><div class="ptxt" id="p2-pt">1/20</div></div>
+      <div class="qlbl" style="color:var(--teal)" id="p2-ql"></div>
+      <div class="comp-big" id="p2-cm" style="display:none"></div>
+      <div class="comp-kana" id="p2-ck" style="display:none"></div>
+      <div class="comp-roma" id="p2-cr" style="display:none"></div>
+      <div class="ogrid" id="p2-og"></div>
+      <div class="fb" id="p2-fb"></div>
+      <button class="nbtn teal" id="p2-nb" onclick="p2Next()">পরের প্রশ্ন →</button>
+    </div>
+  </div>
+  <div class="result" id="p2-res">
+    <div class="rbig" id="p2-re">🎉</div>
+    <div class="rtitle" id="p2-rt"></div>
+    <div class="rsub" id="p2-rs"></div>
+    <div class="rscore" id="p2-rsc" style="color:var(--teal)"></div>
+    <div class="rdetail" id="p2-rd"></div>
+    <button class="rbtn" style="background:linear-gradient(135deg,#1a7a74,var(--teal))" onclick="p2Restart()">আবার খেলো 🔄</button>
+  </div>
+  <div class="ref" style="border-color:rgba(48,192,176,.18)">
+    <div class="ref-ttl" style="color:var(--teal)">📖 ৪৯টি Compound Kanji Reference</div>
+    <div class="cref-grid" id="p2-rg"></div>
+  </div>
+</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bot-nav">
+  <button class="bnav-btn active" onclick="sw(1)" id="tab1">
+    <div class="bnav-icon">
+      <!-- 🧩 Puzzle piece -->
+      <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 4h6v3a2 2 0 0 0 4 0V4h6v6h-3a2 2 0 0 0 0 4h3v8H4v-8h3a2 2 0 0 0 0-4H4V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="bnav-lbl">Radicals</div>
+  </button>
+  <button class="bnav-btn" onclick="sw(2)" id="tab2">
+    <div class="bnav-icon">
+      <!-- 📖 Open book -->
+      <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 6C11 4.5 7 4 3 5v15c4-1 7-.5 10 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M13 6c2-1.5 6-2 10-1v15c-3-1-7-.5-10 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="13" y1="6" x2="13" y2="21.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="bnav-lbl">Single</div>
+  </button>
+  <button class="bnav-btn" onclick="sw(3)" id="tab3">
+    <div class="bnav-icon">
+      <!-- 🔤 Letters A B C stacked -->
+      <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 19l4-12 4 12M5.5 14h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M15 7h4a2 2 0 0 1 0 4h-4v4h4a2 2 0 0 1 0 4h-4V7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="bnav-lbl">Compound</div>
+  </button>
+  <button class="bnav-btn" onclick="sw(4)" id="tab4">
+    <div class="bnav-icon">
+      <!-- 📝 Notepad with pencil -->
+      <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 3H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10l-7-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M15 3v7h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="9" y1="14" x2="17" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="9" y1="18" x2="14" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="bnav-lbl">Mock Test</div>
+  </button>
+</nav>
+
+<script>
+// ── DB1: 131 SINGLE KANJI ──
+const DB1=[
+  {k:'一',r:'いち',ro:'ichi',m:'এক'},{k:'二',r:'に',ro:'ni',m:'দুই'},{k:'三',r:'さん',ro:'san',m:'তিন'},
+  {k:'四',r:'し・よん',ro:'shi/yon',m:'চার'},{k:'五',r:'ご',ro:'go',m:'পাঁচ'},{k:'六',r:'ろく',ro:'roku',m:'ছয়'},
+  {k:'七',r:'しち・なな',ro:'shichi/nana',m:'সাত'},{k:'八',r:'はち',ro:'hachi',m:'আট'},
+  {k:'九',r:'く・きゅう',ro:'ku/kyuu',m:'নয়'},{k:'十',r:'じゅう',ro:'juu',m:'দশ'},
+  {k:'百',r:'ひゃく',ro:'hyaku',m:'একশো'},{k:'千',r:'せん',ro:'sen',m:'হাজার'},
+  {k:'万',r:'まん',ro:'man',m:'দশ হাজার'},{k:'円',r:'えん',ro:'en',m:'ইয়েন'},
+  {k:'日',r:'ひ・にち',ro:'hi/nichi',m:'সূর্য/দিন'},{k:'月',r:'つき・がつ',ro:'tsuki/gatsu',m:'চাঁদ/মাস'},
+  {k:'火',r:'ひ・か',ro:'hi/ka',m:'আগুন'},{k:'水',r:'みず・すい',ro:'mizu/sui',m:'পানি'},
+  {k:'木',r:'き・もく',ro:'ki/moku',m:'গাছ'},{k:'金',r:'かね・きん',ro:'kane/kin',m:'সোনা/টাকা'},
+  {k:'土',r:'つち・ど',ro:'tsuchi/do',m:'মাটি'},{k:'山',r:'やま・さん',ro:'yama/san',m:'পাহাড়'},
+  {k:'川',r:'かわ',ro:'kawa',m:'নদী'},{k:'天',r:'てん',ro:'ten',m:'আকাশ/স্বর্গ'},
+  {k:'雨',r:'あめ・う',ro:'ame/u',m:'বৃষ্টি'},{k:'花',r:'はな・か',ro:'hana/ka',m:'ফুল'},
+  {k:'空',r:'そら・くう',ro:'sora/kuu',m:'আকাশ'},{k:'魚',r:'さかな・ぎょ',ro:'sakana/gyo',m:'মাছ'},
+  {k:'人',r:'ひと・じん',ro:'hito/jin',m:'মানুষ'},{k:'男',r:'おとこ・だん',ro:'otoko/dan',m:'পুরুষ'},
+  {k:'女',r:'おんな・じょ',ro:'onna/jo',m:'নারী'},{k:'子',r:'こ・し',ro:'ko/shi',m:'শিশু'},
+  {k:'父',r:'ちち・ふ',ro:'chichi/fu',m:'বাবা'},{k:'母',r:'はは・ぼ',ro:'haha/bo',m:'মা'},
+  {k:'友',r:'とも・ゆう',ro:'tomo/yuu',m:'বন্ধু'},{k:'先',r:'さき・せん',ro:'saki/sen',m:'আগে/শিক্ষক'},
+  {k:'生',r:'いきる・せい',ro:'ikiru/sei',m:'জীবন/জন্ম'},{k:'私',r:'わたし・し',ro:'watashi/shi',m:'আমি'},
+  {k:'今',r:'いま・こん',ro:'ima/kon',m:'এখন'},{k:'年',r:'ねん・とし',ro:'nen/toshi',m:'বছর'},
+  {k:'時',r:'とき・じ',ro:'toki/ji',m:'সময়/ঘণ্টা'},{k:'分',r:'ふん・ぶん',ro:'fun/bun',m:'মিনিট'},
+  {k:'半',r:'はん',ro:'han',m:'অর্ধেক'},{k:'毎',r:'まい',ro:'mai',m:'প্রতি'},
+  {k:'前',r:'まえ・ぜん',ro:'mae/zen',m:'সামনে/আগে'},{k:'後',r:'あと・ご',ro:'ato/go',m:'পরে'},
+  {k:'午',r:'ご',ro:'go',m:'দুপুর'},{k:'間',r:'あいだ・かん',ro:'aida/kan',m:'মাঝে/সময়'},
+  {k:'週',r:'しゅう',ro:'shuu',m:'সপ্তাহ'},{k:'朝',r:'あさ・ちょう',ro:'asa/chou',m:'সকাল'},
+  {k:'昼',r:'ひる・ちゅう',ro:'hiru/chuu',m:'দুপুর'},{k:'夕',r:'ゆう',ro:'yuu',m:'সন্ধ্যা'},
+  {k:'夜',r:'よる・や',ro:'yoru/ya',m:'রাত'},
+  {k:'国',r:'くに・こく',ro:'kuni/koku',m:'দেশ'},{k:'学',r:'まなぶ・がく',ro:'manabu/gaku',m:'শেখা'},
+  {k:'校',r:'こう',ro:'kou',m:'স্কুল'},{k:'家',r:'いえ・か',ro:'ie/ka',m:'বাড়ি'},
+  {k:'店',r:'みせ・てん',ro:'mise/ten',m:'দোকান'},{k:'社',r:'しゃ',ro:'sha',m:'কোম্পানি'},
+  {k:'会',r:'あう・かい',ro:'au/kai',m:'দেখা/সভা'},{k:'駅',r:'えき',ro:'eki',m:'স্টেশন'},
+  {k:'道',r:'みち・どう',ro:'michi/dou',m:'রাস্তা'},{k:'銀',r:'ぎん',ro:'gin',m:'রুপা/ব্যাংক'},
+  {k:'車',r:'くるま・しゃ',ro:'kuruma/sha',m:'গাড়ি'},{k:'電',r:'でん',ro:'den',m:'বিদ্যুৎ'},
+  {k:'本',r:'ほん・もと',ro:'hon/moto',m:'বই/মূল'},{k:'紙',r:'かみ・し',ro:'kami/shi',m:'কাগজ'},
+  {k:'名',r:'なまえ・めい',ro:'namae/mei',m:'নাম'},{k:'気',r:'き',ro:'ki',m:'অনুভূতি'},
+  {k:'口',r:'くち・こう',ro:'kuchi/kou',m:'মুখ'},{k:'目',r:'め・もく',ro:'me/moku',m:'চোখ'},
+  {k:'手',r:'て・しゅ',ro:'te/shu',m:'হাত'},{k:'足',r:'あし・そく',ro:'ashi/soku',m:'পা'},
+  {k:'耳',r:'みみ・じ',ro:'mimi/ji',m:'কান'},
+  {k:'行',r:'いく・こう',ro:'iku/kou',m:'যাওয়া'},{k:'来',r:'くる・らい',ro:'kuru/rai',m:'আসা'},
+  {k:'休',r:'やすむ・きゅう',ro:'yasumu/kyuu',m:'বিশ্রাম'},{k:'見',r:'みる・けん',ro:'miru/ken',m:'দেখা'},
+  {k:'話',r:'はなす・わ',ro:'hanasu/wa',m:'কথা বলা'},{k:'食',r:'たべる・しょく',ro:'taberu/shoku',m:'খাওয়া'},
+  {k:'聞',r:'きく・ぶん',ro:'kiku/bun',m:'শোনা'},{k:'書',r:'かく・しょ',ro:'kaku/sho',m:'লেখা'},
+  {k:'読',r:'よむ・どく',ro:'yomu/doku',m:'পড়া'},{k:'入',r:'はいる・にゅう',ro:'hairu/nyuu',m:'প্রবেশ'},
+  {k:'出',r:'でる・しゅつ',ro:'deru/shutsu',m:'বের হওয়া'},{k:'買',r:'かう・ばい',ro:'kau/bai',m:'কেনা'},
+  {k:'言',r:'いう・げん',ro:'iu/gen',m:'বলা'},{k:'思',r:'おもう・し',ro:'omou/shi',m:'মনে করা'},
+  {k:'歩',r:'あるく・ほ',ro:'aruku/ho',m:'হাঁটা'},{k:'走',r:'はしる・そう',ro:'hashiru/sou',m:'দৌড়ানো'},
+  {k:'住',r:'すむ・じゅう',ro:'sumu/juu',m:'বাস করা'},{k:'飲',r:'のむ・いん',ro:'nomu/in',m:'পান করা'},
+  {k:'立',r:'たつ・りつ',ro:'tatsu/ritsu',m:'দাঁড়ানো'},{k:'知',r:'しる・ち',ro:'shiru/chi',m:'জানা'},
+  {k:'有',r:'ある・ゆう',ro:'aru/yuu',m:'আছে/থাকা'},
+  {k:'大',r:'おおきい・だい',ro:'ookii/dai',m:'বড়'},{k:'小',r:'ちいさい・しょう',ro:'chiisai/shou',m:'ছোট'},
+  {k:'上',r:'うえ・じょう',ro:'ue/jou',m:'উপরে'},{k:'下',r:'した・か',ro:'shita/ka',m:'নিচে'},
+  {k:'中',r:'なか・ちゅう',ro:'naka/chuu',m:'ভেতরে/মাঝে'},{k:'右',r:'みぎ',ro:'migi',m:'ডানে'},
+  {k:'左',r:'ひだり',ro:'hidari',m:'বামে'},{k:'白',r:'しろ・はく',ro:'shiro/haku',m:'সাদা'},
+  {k:'赤',r:'あか・せき',ro:'aka/seki',m:'লাল'},{k:'高',r:'たかい・こう',ro:'takai/kou',m:'উঁচু/দামি'},
+  {k:'長',r:'ながい・ちょう',ro:'nagai/chou',m:'লম্বা'},{k:'多',r:'おおい・た',ro:'ooi/ta',m:'অনেক'},
+  {k:'少',r:'すくない・しょう',ro:'sukunai/shou',m:'কম'},{k:'古',r:'ふるい・こ',ro:'furui/ko',m:'পুরোনো'},
+  {k:'新',r:'あたらしい・しん',ro:'atarashii/shin',m:'নতুন'},{k:'広',r:'ひろい・こう',ro:'hiroi/kou',m:'প্রশস্ত'},
+  {k:'安',r:'やすい・あん',ro:'yasui/an',m:'সস্তা/শান্তি'},{k:'近',r:'ちかい・きん',ro:'chikai/kin',m:'কাছে'},
+  {k:'東',r:'ひがし・とう',ro:'higashi/tou',m:'পূর্ব'},{k:'西',r:'にし・せい',ro:'nishi/sei',m:'পশ্চিম'},
+  {k:'南',r:'みなみ・なん',ro:'minami/nan',m:'দক্ষিণ'},{k:'北',r:'きた・ほく',ro:'kita/hoku',m:'উত্তর'},
+  {k:'語',r:'ご',ro:'go',m:'ভাষা/শব্দ'},{k:'外',r:'そと・がい',ro:'soto/gai',m:'বাইরে'},
+  {k:'何',r:'なに・なん',ro:'nani/nan',m:'কী/কত'},
+  {k:'去',r:'さる・きょ',ro:'saru/kyo',m:'যাওয়া/গত'},
+  {k:'好',r:'すき・こう',ro:'suki/kou',m:'পছন্দ'},
+  {k:'島',r:'しま・とう',ro:'shima/tou',m:'দ্বীপ'},
+  {k:'工',r:'く・こう',ro:'ku/kou',m:'কারিগর/কাজ'},
+  {k:'明',r:'めい・みょう',ro:'mei/myou',m:'উজ্জ্বল'},
+  {k:'次',r:'つぎ',ro:'tsugi',m:'পরের'},
+  {k:'海',r:'うみ・かい',ro:'umi/kai',m:'সমুদ্র'},
+  {k:'田',r:'た・でん',ro:'ta/den',m:'ধানক্ষেত'},
+  {k:'門',r:'もん',ro:'mon',m:'দরজা/গেট'},
+  {k:'雪',r:'ゆき・せつ',ro:'yuki/setsu',m:'তুষার/বরফ'},
+  {k:'雲',r:'くも・うん',ro:'kumo/un',m:'মেঘ'},
+];
+
+// ── DB2: 49 COMPOUND KANJI ──
+const DB2=[
+  {k:'日本人',r:'にほんじん',ro:'nihonjin',m:'জাপানি মানুষ'},{k:'学生',r:'がくせい',ro:'gakusei',m:'ছাত্র'},
+  {k:'大学',r:'だいがく',ro:'daigaku',m:'বিশ্ববিদ্যালয়'},{k:'高校',r:'こうこう',ro:'koukou',m:'উচ্চ বিদ্যালয়'},
+  {k:'中学校',r:'ちゅうがっこう',ro:'chuugakkou',m:'মাধ্যমিক বিদ্যালয়'},{k:'小学校',r:'しょうがっこう',ro:'shougakkou',m:'প্রাথমিক বিদ্যালয়'},
+  {k:'先生',r:'せんせい',ro:'sensei',m:'শিক্ষক'},{k:'名前',r:'なまえ',ro:'namae',m:'নাম'},
+  {k:'本屋',r:'ほんや',ro:'honya',m:'বইয়ের দোকান'},{k:'時間',r:'じかん',ro:'jikan',m:'সময়'},
+  {k:'日曜',r:'にちよう',ro:'nichiyou',m:'রবিবার'},{k:'月曜',r:'げつよう',ro:'getsuyou',m:'সোমবার'},
+  {k:'火曜',r:'かよう',ro:'kayou',m:'মঙ্গলবার'},{k:'水曜',r:'すいよう',ro:'suiyou',m:'বুধবার'},
+  {k:'木曜',r:'もくよう',ro:'mokuyou',m:'বৃহস্পতিবার'},{k:'金曜',r:'きんよう',ro:'kinyou',m:'শুক্রবার'},
+  {k:'土曜',r:'どよう',ro:'doyou',m:'শনিবার'},{k:'手紙',r:'てがみ',ro:'tegami',m:'চিঠি'},
+  {k:'人口',r:'じんこう',ro:'jinkou',m:'জনসংখ্যা'},{k:'山川',r:'やまかわ',ro:'yamakawa',m:'পাহাড় ও নদী'},
+  {k:'大木',r:'おおき',ro:'ooki',m:'বড় গাছ'},{k:'水田',r:'すいでん',ro:'suiden',m:'ধানক্ষেত'},
+  {k:'午前',r:'ごぜん',ro:'gozen',m:'সকাল (AM)'},{k:'午後',r:'ごご',ro:'gogo',m:'বিকেল (PM)'},
+  {k:'半分',r:'はんぶん',ro:'hanbun',m:'অর্ধেক'},{k:'毎月',r:'まいつき',ro:'maitsuki',m:'প্রতি মাস'},
+  {k:'毎日',r:'まいにち',ro:'mainichi',m:'প্রতিদিন'},{k:'毎年',r:'まいとし',ro:'maitoshi',m:'প্রতি বছর'},
+  {k:'今月',r:'こんげつ',ro:'kongetsu',m:'এই মাস'},{k:'今年',r:'ことし',ro:'kotoshi',m:'এই বছর'},
+  {k:'来年',r:'らいねん',ro:'rainen',m:'আগামী বছর'},{k:'先月',r:'せんげつ',ro:'sengetsu',m:'গত মাস'},
+  {k:'今週',r:'こんしゅう',ro:'konshuu',m:'এই সপ্তাহ'},{k:'来週',r:'らいしゅう',ro:'raishuu',m:'আগামী সপ্তাহ'},
+  {k:'先週',r:'せんしゅう',ro:'senshuu',m:'গত সপ্তাহ'},{k:'入口',r:'いりぐち',ro:'iriguchi',m:'প্রবেশদ্বার'},
+  {k:'出口',r:'でぐち',ro:'deguchi',m:'বাহির দরজা'},{k:'大雨',r:'おおあめ',ro:'ooame',m:'ভারী বৃষ্টি'},
+  {k:'車道',r:'しゃどう',ro:'shadou',m:'গাড়ির রাস্তা'},{k:'休日',r:'きゅうじつ',ro:'kyuujitsu',m:'ছুটির দিন'},
+  {k:'生日',r:'せいじつ',ro:'seijitsu',m:'জন্মদিন'},{k:'年前',r:'ねんまえ',ro:'nenmae',m:'বছর আগে'},
+  {k:'電気',r:'でんき',ro:'denki',m:'বিদ্যুৎ/বাতি'},{k:'電話',r:'でんわ',ro:'denwa',m:'টেলিফোন'},
+  {k:'大人',r:'おとな',ro:'otona',m:'প্রাপ্তবয়স্ক'},{k:'外国',r:'がいこく',ro:'gaikoku',m:'বিদেশ'},
+  {k:'外国人',r:'がいこくじん',ro:'gaikokujin',m:'বিদেশি মানুষ'},{k:'日本語',r:'にほんご',ro:'nihongo',m:'জাপানি ভাষা'},
+  {k:'今日',r:'きょう',ro:'kyou',m:'আজ'},
+];
+
+// ── RADICAL GROUPS (Japanese Dictionary Standard — Primary Radical Only) ──
+// Each kanji placed in its ONE correct primary radical group per Kangxi/Joyo standard.
+// No duplicates across groups.
+const RG=[
+  // ── 1. 一 (horizontal stroke) — Radical #1
+  {s:'一',n:'一 (いち) — 横画',bn:'একটি দাগ / সংখ্যা',c:'#f0c040',
+   note:'জাপানি সংখ্যাগুলো N5-এর ভিত্তি। 一 radical-এ মূলত যে kanji-তে শুধু একটি horizontal stroke প্রধান।',
+   k:[{k:'一',r:'いち',m:'এক'},{k:'二',r:'に',m:'দুই'},{k:'三',r:'さん',m:'তিন'},{k:'七',r:'しち・なな',m:'সাত'},{k:'万',r:'まん',m:'দশ হাজার'}]},
+
+  // ── 2. 人/亻 — Radical #9
+  {s:'人/亻',n:'人/亻 (ひと/じん) — ひと偏',bn:'মানুষ',c:'#e08060',
+   note:'মানুষ বা ব্যক্তি সম্পর্কিত। 亻 হলো 人-এর henben (偏) রূপ, বাঁদিকে আসলে।',
+   k:[{k:'人',r:'ひと・じん',m:'মানুষ'},{k:'今',r:'いま・こん',m:'এখন'},{k:'休',r:'やすむ・きゅう',m:'বিশ্রাম'},{k:'何',r:'なに・なん',m:'কী/কত'},{k:'住',r:'すむ・じゅう',m:'বাস করা'},{k:'来',r:'くる・らい',m:'আসা'},{k:'会',r:'あう・かい',m:'দেখা/সভা'}]},
+
+  // ── 3. 八 — Radical #12
+  {s:'八',n:'八 (はち) — はち',bn:'আট / ভাগ করা',c:'#d0b060',
+   note:'八 এর আকৃতি দুদিকে ছড়ানো। এই radical যুক্ত kanji-তে বিভাজনের ধারণা থাকে।',
+   k:[{k:'八',r:'はち',m:'আট'},{k:'六',r:'ろく',m:'ছয়'},{k:'分',r:'ふん・ぶん',m:'মিনিট/ভাগ'},{k:'半',r:'はん',m:'অর্ধেক'},{k:'父',r:'ちち・ふ',m:'বাবা'}]},
+
+  // ── 4. 口 — Radical #30
+  {s:'口',n:'口 (くち/こう) — くちへん',bn:'মুখ',c:'#e07070',
+   note:'মুখ, কথা বা উচ্চারণ সম্পর্কিত। 口 যুক্ত kanji-তে সাধারণত বলা বা খাওয়ার অর্থ থাকে। 国 = 囗+玉 (enclosure)।',
+   k:[{k:'口',r:'くち・こう',m:'মুখ'},{k:'古',r:'ふるい・こ',m:'পুরোনো'},{k:'名',r:'なまえ・めい',m:'নাম'},{k:'国',r:'くに・こく',m:'দেশ'}]},
+
+  // ── 5. 土 — Radical #32
+  {s:'土',n:'土 (つち/ど) — つちへん',bn:'মাটি / ভূমি',c:'#c09050',
+   note:'মাটি বা ভূমি সম্পর্কিত। 社 (やしろ) kanji-তে 土 radical প্রাথমিক।',
+   k:[{k:'土',r:'つち・ど',m:'মাটি'},{k:'社',r:'しゃ',m:'কোম্পানি'},{k:'去',r:'さる・きょ',m:'যাওয়া/গত'}]},
+
+  // ── 6. 大 — Radical #37
+  {s:'大',n:'大 (おお/だい) — だい',bn:'বড়',c:'#e0c060',
+   note:'বড় বা গুরুত্বপূর্ণ সম্পর্কিত। 天 (てん) = 大+一, মানুষের মাথার উপরে আকাশ।',
+   k:[{k:'大',r:'おおきい・だい',m:'বড়'},{k:'天',r:'てん',m:'আকাশ/স্বর্গ'},{k:'多',r:'おおい・た',m:'অনেক'}]},
+
+  // ── 7. 女 — Radical #38
+  {s:'女',n:'女 (おんな/じょ) — おんなへん',bn:'নারী',c:'#e080b0',
+   note:'নারী ও পরিবার সম্পর্কিত। 好 (すき) = 女+子, নারী ও শিশু = পছন্দ।',
+   k:[{k:'女',r:'おんな・じょ',m:'নারী'},{k:'好',r:'すき・こう',m:'পছন্দ'},{k:'母',r:'はは・ぼ',m:'মা'}]},
+
+  // ── 8. 子 — Radical #39
+  {s:'子',n:'子 (こ/し) — こへん',bn:'শিশু',c:'#70d0a0',
+   note:'শিশু সম্পর্কিত। 学 (まなぶ) -এর নিচে 子 আছে — শিশু পড়াশোনা করে।',
+   k:[{k:'子',r:'こ・し',m:'শিশু'},{k:'学',r:'まなぶ・がく',m:'শেখা'}]},
+
+  // ── 9. 小 — Radical #42
+  {s:'小',n:'小 (ちい/しょう) — しょう',bn:'ছোট',c:'#a0d0e0',
+   note:'ছোট বা কম সম্পর্কিত। 少 (すくない) = 小 + わずかな変化。',
+   k:[{k:'小',r:'ちいさい・しょう',m:'ছোট'},{k:'少',r:'すくない・しょう',m:'কম'}]},
+
+  // ── 10. 山 — Radical #46
+  {s:'山',n:'山 (やま/さん) — やまへん',bn:'পাহাড়',c:'#90a080',
+   note:'পাহাড় বা উঁচু জায়গা সম্পর্কিত। 出 (でる) = 山が二つ重なる形。',
+   k:[{k:'山',r:'やま・さん',m:'পাহাড়'},{k:'出',r:'でる・しゅつ',m:'বের হওয়া'},{k:'島',r:'しま・とう',m:'দ্বীপ'}]},
+
+  // ── 11. 川 — Radical #47
+  {s:'川',n:'川 (かわ) — かわ',bn:'নদী',c:'#60b0d0',
+   note:'নদী ও প্রবাহ সম্পর্কিত। 川 নিজেই একটি pictograph — তিনটি জলধারা।',
+   k:[{k:'川',r:'かわ',m:'নদী'}]},
+
+  // ── 12. 工 — Radical #48
+  {s:'工',n:'工 (く/こう) — たくみへん',bn:'কারিগর / কাজ',c:'#90b090',
+   note:'工 = Radical #48। বাঁ হাতে কাজের সরঞ্জাম ধরার চিত্র। 左 কে দিক গ্রুপে রাখা হয়েছে।',
+   k:[{k:'工',r:'く・こう',m:'কারিগর/কাজ'}]},
+
+  // ── 13. 日 — Radical #72
+  {s:'日',n:'日 (ひ/にち) — にちへん',bn:'সূর্য / দিন',c:'#e0a030',
+   note:'সূর্য ও দিনের সাথে সম্পর্কিত। 時 (とき), 昼 (ひる), 朝 (あさ) সব 日 radical যুক্ত।',
+   k:[{k:'日',r:'ひ・にち',m:'সূর্য/দিন'},{k:'時',r:'とき・じ',m:'সময়/ঘণ্টা'},{k:'昼',r:'ひる・ちゅう',m:'দুপুর'},{k:'朝',r:'あさ・ちょう',m:'সকাল'},{k:'明',r:'めい・みょう',m:'উজ্জ্বল'}]},
+
+  // ── 14. 月 — Radical #74
+  {s:'月',n:'月 (つき/げつ) — つきへん',bn:'চাঁদ / মাস',c:'#a0b0e0',
+   note:'চাঁদ এবং মাস বোঝাতে ব্যবহৃত। 有 (ある) এর primary radical হলো 月।',
+   k:[{k:'月',r:'つき・がつ',m:'চাঁদ/মাস'},{k:'有',r:'ある・ゆう',m:'আছে/থাকা'}]},
+
+  // ── 15. 木 — Radical #75
+  {s:'木',n:'木 (き/もく) — きへん',bn:'গাছ / কাঠ',c:'#80b060',
+   note:'গাছ ও কাঠ সম্পর্কিত। 本 (ほん) = গাছের গোড়ায় চিহ্ন = মূল/বই। 校 (こう) = 木+交。',
+   k:[{k:'木',r:'き・もく',m:'গাছ'},{k:'本',r:'ほん・もと',m:'বই/মূল'},{k:'校',r:'こう',m:'স্কুল'},{k:'新',r:'あたらしい・しん',m:'নতুন'}]},
+
+  // ── 16. 欠 — Radical #76
+  {s:'欠',n:'欠 (かける/けつ) — あくびへん',bn:'অভাব / পান করা',c:'#c080a0',
+   note:'欠 radical এর অর্থ মুখ খোলা বা শ্বাস ছাড়া। 次 (つぎ), 歌 (うた), 飲 (のむ) এর primary radical।',
+   k:[{k:'次',r:'つぎ',m:'পরের'},{k:'飲',r:'のむ・いん',m:'পান করা'}]},
+
+  // ── 17. 止 — Radical #77
+  {s:'止',n:'止 (とまる/し) — とめへん',bn:'থামা / পা',c:'#a0a070',
+   note:'止 = থেমে যাওয়া। 歩 (あるく) এবং 走 (はしる) উভয়ের নিচে এই radical আছে।',
+   k:[{k:'歩',r:'あるく・ほ',m:'হাঁটা'},{k:'走',r:'はしる・そう',m:'দৌড়ানো'}]},
+
+  // ── 18. 火 — Radical #86
+  {s:'火',n:'火 (ひ/か) — ひへん',bn:'আগুন',c:'#e06040',
+   note:'আগুন সম্পর্কিত। 火曜日 (かようび) = মঙ্গলবার। 火 নিজেই একটি pictograph।',
+   k:[{k:'火',r:'ひ・か',m:'আগুন'}]},
+
+  // ── 19. 父 correction — 父 is Radical #88
+  // (already placed under 八 per kangxi; 父 is its own radical #88 in strict sense)
+  // keeping 父 under 八 for N5 learner clarity since both share the top strokes.
+
+  // ── 20. 牛 — Radical #93 (for 午)
+  {s:'十',n:'十 (じゅう) — じゅう',bn:'দশ',c:'#c0c060',
+   note:'十 = দশ। 午 (ご) এর primary radical হলো 十 (Kangxi #24)। 千 (せん) এবং 半 (はん) ও এই গ্রুপে।',
+   k:[{k:'十',r:'じゅう',m:'দশ'},{k:'午',r:'ご',m:'দুপুর'},{k:'千',r:'せん',m:'হাজার'}]},
+
+  // ── 21. 水/氵 — Radical #85
+  {s:'水/氵',n:'水/氵 (みず/すい) — さんずいへん',bn:'পানি',c:'#60b0e0',
+   note:'পানি সম্পর্কিত। 氵 হলো পানির ৩-ফোঁটা rūpa যা বাঁদিকে আসে। 海 (うみ) তে 氵 আছে।',
+   k:[{k:'水',r:'みず・すい',m:'পানি'},{k:'海',r:'うみ・かい',m:'সমুদ্র'}]},
+
+  // ── 22. 目 — Radical #109
+  {s:'目',n:'目 (め/もく) — めへん',bn:'চোখ',c:'#80c0b0',
+   note:'চোখ ও দেখা সম্পর্কিত। 見 (みる) = 目+人 = চোখ দিয়ে মানুষ দেখে। 思 (おもう) = 田/心 — actually 心 radical, not 目。',
+   k:[{k:'目',r:'め・もく',m:'চোখ'},{k:'見',r:'みる・けん',m:'দেখা'}]},
+
+  // ── 23. 石 — Radical #112 (for 右 alternative; 右 correct under 口)
+  // ── 24. 示/礻 — Radical #113 (社 already under 土)
+
+  // ── 25. 糸/纟 — Radical #120
+  {s:'糸',n:'糸 (いと/し) — いとへん',bn:'সুতা / কাপড়',c:'#c060c0',
+   note:'সুতা ও কাপড় সম্পর্কিত। 紙 (かみ) = 糸+氏。 N5 তে এই group ছোট।',
+   k:[{k:'紙',r:'かみ・し',m:'কাগজ'}]},
+
+  // ── 26. 耳 — Radical #128
+  {s:'耳',n:'耳 (みみ/じ) — みみへん',bn:'কান',c:'#70c0a0',
+   note:'কান ও শোনা সম্পর্কিত। 聞 (きく) = 耳+門 = দরজার ফাঁক দিয়ে কান পেতে শোনা।',
+   k:[{k:'耳',r:'みみ・じ',m:'কান'},{k:'聞',r:'きく・ぶん',m:'শোনা'}]},
+
+  // ── 27. 言/訁 — Radical #149
+  {s:'言',n:'言 (いう/げん) — ごんべん',bn:'কথা / বলা',c:'#70b0d0',
+   note:'কথা, ভাষা বা যোগাযোগ সম্পর্কিত। 話 (はなす), 読 (よむ), 語 (ご) সব 言 radical।',
+   k:[{k:'言',r:'いう・げん',m:'বলা'},{k:'話',r:'はなす・わ',m:'কথা বলা'},{k:'読',r:'よむ・どく',m:'পড়া'},{k:'語',r:'ご',m:'ভাষা/শব্দ'}]},
+
+  // ── 28. 走 is under 止; 足 — Radical #157
+  {s:'足',n:'足 (あし/そく) — あしへん',bn:'পা',c:'#a090e0',
+   note:'পা ও চলাচল সম্পর্কিত। 足 = থেমে থাকা পায়ের চিত্র। 道 (みち) এর primary radical হলো 辶 (しんにゅう)।',
+   k:[{k:'足',r:'あし・そく',m:'পা'}]},
+
+  // ── 29. 車 — Radical #159
+  {s:'車',n:'車 (くるま/しゃ) — くるまへん',bn:'গাড়ি / চাকা',c:'#50a0e0',
+   note:'গাড়ি ও যানবাহন সম্পর্কিত। 駅 (えき) এর primary radical হলো 馬 (うま)।',
+   k:[{k:'車',r:'くるま・しゃ',m:'গাড়ি'}]},
+
+  // ── 30. 金/釒 — Radical #167
+  {s:'金',n:'金 (かね/きん) — かねへん',bn:'সোনা / ধাতু',c:'#f0c040',
+   note:'ধাতু, সোনা বা অর্থ সম্পর্কিত। 銀 (ぎん) = 金+艮。 円 (えん) এর primary radical হলো 冂。',
+   k:[{k:'金',r:'かね・きん',m:'সোনা/টাকা'},{k:'銀',r:'ぎん',m:'রুপা/ব্যাংক'}]},
+
+  // ── 31. 長 — Radical #168
+  {s:'長',n:'長 (ながい/ちょう) — ながい',bn:'লম্বা / দীর্ঘ',c:'#b0a060',
+   note:'長 নিজেই একটি radical (#168)। লম্বা চুলওয়ালা বয়স্ক মানুষের pictograph।',
+   k:[{k:'長',r:'ながい・ちょう',m:'লম্বা'}]},
+
+  // ── 32. 門 — Radical #169
+  {s:'門',n:'門 (もん) — もんがまえ',bn:'দরজা / গেট',c:'#c07050',
+   note:'দরজা ও প্রবেশদ্বার সম্পর্কিত। 間 (あいだ) = 門+日 = দরজার ফাঁকে সূর্য = সময়/মাঝে।',
+   k:[{k:'門',r:'もん',m:'門/গেট'},{k:'間',r:'あいだ・かん',m:'মাঝে/সময়'}]},
+
+  // ── 33. 雨 — Radical #173
+  {s:'雨',n:'雨 (あめ/う) — あめかんむり',bn:'বৃষ্টি / আবহাওয়া',c:'#8090d0',
+   note:'আবহাওয়া ও প্রকৃতি সম্পর্কিত। 電 (でん), 雪 (ゆき), 雲 (くも) সব 雨 radical।',
+   k:[{k:'雨',r:'あめ・う',m:'বৃষ্টি'},{k:'電',r:'でん',m:'বিদ্যুৎ'},{k:'雪',r:'ゆき・せつ',m:'তুষার/বরফ'},{k:'雲',r:'くも・うん',m:'মেঘ'}]},
+
+  // ── 34. 食/飠 — Radical #184
+  {s:'食',n:'食 (たべ/しょく) — しょくへん',bn:'খাবার / খাওয়া',c:'#d08060',
+   note:'খাওয়া ও খাদ্য সম্পর্কিত। 飲 (のむ) এর primary radical হলো 欠 (けつ)。 食 নিজে Radical #184।',
+   k:[{k:'食',r:'たべる・しょく',m:'খাওয়া'}]},
+
+  // ── 35. 馬 — Radical #187
+  {s:'馬',n:'馬 (うま/ば) — うまへん',bn:'ঘোড়া / যানবাহন',c:'#906050',
+   note:'駅 (えき) = 馬+睪。 স্টেশন মূলত ঘোড়ার থামার জায়গা ছিল।',
+   k:[{k:'駅',r:'えき',m:'স্টেশন'}]},
+
+  // ── 36. 魚 — Radical #195
+  {s:'魚',n:'魚 (さかな/ぎょ) — さかなへん',bn:'মাছ',c:'#60d0b0',
+   note:'魚 নিজেই একটি pictograph radical (#195)। মাছের আকৃতি থেকে তৈরি।',
+   k:[{k:'魚',r:'さかな・ぎょ',m:'মাছ'}]},
+
+  // ── 37. Special groups: 生・手・気・私・知・立・有・名・書・思
+  // These have unique/complex radicals; grouped by their correct Kangxi primary radical:
+
+  // 生 → Radical #100 (生 itself)
+  {s:'生',n:'生 (いきる/せい) — うまれる',bn:'জীবন / জন্ম',c:'#50c0a0',
+   note:'生 নিজেই primary radical #100। জীবন, জন্ম ও বেড়ে ওঠা সম্পর্কিত।',
+   k:[{k:'生',r:'いきる・せい',m:'জীবন/জন্ম'}]},
+
+  // 手 → Radical #64 (手)
+  {s:'手',n:'手 (て/しゅ) — てへん',bn:'হাত',c:'#e0a080',
+   note:'হাত ও কাজ সম্পর্কিত। 手 = Radical #64। 書 (かく) এর primary radical হলো 曰 (#73)।',
+   k:[{k:'手',r:'て・しゅ',m:'হাত'}]},
+
+  // 書 → Radical #73 (曰)
+  {s:'曰',n:'曰 (いわく) — いわく',bn:'বলা / লেখা',c:'#c0a070',
+   note:'曰 = Radical #73 = কথা বলা। 書 (かく) = 聿+曰 = কলম ধরে লেখা।',
+   k:[{k:'書',r:'かく・しょ',m:'লেখা'}]},
+
+  // 気 → Radical #84 (气)
+  {s:'気',n:'気 (き/け) — きがまえ',bn:'気持ち / 天気',c:'#80c0e0',
+   note:'気 = 気 radical (#84, 气)。 অনুভূতি, বায়ু, আবহাওয়া সম্পর্কিত N5 kanji।',
+   k:[{k:'気',r:'き',m:'অনুভূতি/天気'}]},
+
+  // 思 → Radical #61 (心)
+  {s:'心',n:'心 (こころ) — こころへん',bn:'মন / হৃদয়',c:'#e060a0',
+   note:'মন ও অনুভূতি সম্পর্কিত। 思 (おもう) = 田+心 — মন দিয়ে মনে করা।',
+   k:[{k:'思',r:'おもう・し',m:'মনে করা'}]},
+
+  // 私 → Radical #115 (禾)
+  {s:'禾',n:'禾 (いね/か) — のぎへん',bn:'ধান / শস্য',c:'#b0a040',
+   note:'ধান ও শস্য সম্পর্কিত। 私 (わたし) = 禾+ム। শস্যের মালিক = আমি।',
+   k:[{k:'私',r:'わたし・し',m:'আমি'}]},
+
+  // 知 → Radical #111 (矢)
+  {s:'矢',n:'矢 (や/し) — やへん',bn:'তীর / জানা',c:'#c0a060',
+   note:'তীরের মতো সোজা ও নির্ভুল। 知 (しる) = 矢+口 = তীরের মতো সঠিক কথা বলা = জানা।',
+   k:[{k:'知',r:'しる・ち',m:'জানা'}]},
+
+  // 立 → Radical #117 (立)
+  {s:'立',n:'立 (たつ/りつ) — たつ',bn:'দাঁড়ানো',c:'#90d090',
+   note:'立 = Radical #117 নিজেই। মাটির উপর দাঁড়িয়ে থাকা মানুষের pictograph।',
+   k:[{k:'立',r:'たつ・りつ',m:'দাঁড়ানো'}]},
+
+  // 行 → Radical #144 (行)
+  {s:'行',n:'行 (いく/こう) — ぎょうにんべん',bn:'যাওয়া / চলা',c:'#70d0b0',
+   note:'行 = Radical #144। রাস্তায় চলার ছবি। 道 (みち) ও 近 (ちかい) এর primary radical হলো 辶 (しんにゅう/#162)।',
+   k:[{k:'行',r:'いく・こう',m:'যাওয়া'}]},
+
+  // 道・近・週 → Radical #162 (辶 しんにゅう)
+  {s:'辶',n:'辶 (しんにゅう) — 道・近・週',bn:'চলাচল / পথ',c:'#50c0a0',
+   note:'辶 = Radical #162 = হাঁটার গতি। 道 (みち) = 辶+首, 近 (ちかい) = 辶+斤, 週 (しゅう) = 辶+周।',
+   k:[{k:'道',r:'みち・どう',m:'রাস্তা'},{k:'近',r:'ちかい・きん',m:'কাছে'},{k:'週',r:'しゅう',m:'সপ্তাহ'}]},
+
+  // 前・別 → Radical #18 (刀/刂)
+  {s:'刀',n:'刀 (かたな/とう) — かたなへん',bn:'ছুরি / কাটা',c:'#c0d0d0',
+   note:'刀/刂 = Radical #18 = ছুরি। 前 (まえ) = 止+月+刂 — 刂 এর primary radical।',
+   k:[{k:'前',r:'まえ・ぜん',m:'সামনে/আগে'}]},
+
+  // 入 → Radical #11 (入)
+  {s:'入',n:'入 (はいる/にゅう) — いる',bn:'প্রবেশ করা',c:'#80e0c0',
+   note:'入 = Radical #11। ভেতরে ঢোকার চিত্র। 円 (えん) এর radical হলো 冂。',
+   k:[{k:'入',r:'はいる・にゅう',m:'প্রবেশ'}]},
+
+  // 買 → Radical #154 (貝)
+  {s:'貝',n:'貝 (かい) — かいへん',bn:'শাঁখা / মুদ্রা',c:'#d0b050',
+   note:'貝 = Radical #154 = খোলস/মুদ্রা। 買 (かう) = 網+貝 = জাল দিয়ে সংগ্রহ করা মুদ্রা।',
+   k:[{k:'買',r:'かう・ばい',m:'কেনা'}]},
+
+  // 百 → Radical #106 (白)
+  // 白 → Radical #106
+  {s:'白',n:'白 (しろ/はく) — しろ',bn:'সাদা',c:'#d0d0d0',
+   note:'白 = Radical #106। সূর্য থেকে আলো বের হচ্ছে = সাদা/উজ্জ্বল। 百 (ひゃく) = 一+白。',
+   k:[{k:'白',r:'しろ・はく',m:'সাদা'},{k:'百',r:'ひゃく',m:'একশো'}]},
+
+  // Numbers remaining: 一(done), 二(done), 三(done), 四, 五, 九, 万(done)
+  // 四→囗 radical, 五→二 radical, 九→乙 radical
+  // Group remaining numbers:
+  {s:'数字',n:'四・五・九・円 — 残り数字',bn:'বাকি সংখ্যা',c:'#c0c040',
+   note:'四 (Radical 囗#31), 五 (Radical 二#7), 九 (Radical 乙#5), 円 (Radical 冂#13) — এগুলো ভিন্ন radical তবে N5 সংখ্যা হিসেবে একসাথে।',
+   k:[{k:'四',r:'し・よん',m:'চার'},{k:'五',r:'ご',m:'পাঁচ'},{k:'九',r:'く・きゅう',m:'নয়'},{k:'円',r:'えん',m:'ইয়েন'}]},
+
+  // 年 → Radical #51 (干)
+  {s:'年',n:'年 (ねん/とし) — としへん',bn:'বছর',c:'#e0b080',
+   note:'年 = Radical #51 (干)。 প্রতিটি বছর ফসল কাটার চক্র থেকে এই kanji।',
+   k:[{k:'年',r:'ねん・とし',m:'বছর'},{k:'毎',r:'まい',m:'প্রতি'},{k:'先',r:'さき・せん',m:'আগে/শিক্ষক'}]},
+
+  // 夕 / 夜 → Radical #36 (夕)
+  {s:'夕',n:'夕 (ゆう) — ゆうべ',bn:'সন্ধ্যা / রাত',c:'#8060c0',
+   note:'夕 = Radical #36 = চাঁদের একাংশ দৃশ্যমান = সন্ধ্যা। 夜 (よる) ও 外 (そと) তে 夕 আছে।',
+   k:[{k:'夕',r:'ゆう',m:'সন্ধ্যা'},{k:'夜',r:'よる・や',m:'রাত'},{k:'外',r:'そと・がい',m:'বাইরে'}]},
+
+  // 花・空 → Radical #140 (艹 くさかんむり)
+  {s:'艹',n:'艹 (くさかんむり) — 草冠',bn:'ঘাস / উদ্ভিদ',c:'#60c060',
+   note:'ঘাস ও উদ্ভিদ সম্পর্কিত। 花 (はな) = 艹+化, 空 (そら) এর radical হলো 穴 (#116)。',
+   k:[{k:'花',r:'はな・か',m:'ফুল'}]},
+
+  // 空 → Radical #116 (穴)
+  {s:'穴',n:'穴 (あな/けつ) — あなかんむり',bn:'穴 / 空間',c:'#6090c0',
+   note:'穴 = Radical #116 = 구멍/빈 空間。 空 (そら) = 穴+工 = 빈 하늘。',
+   k:[{k:'空',r:'そら・くう',m:'আকাশ'}]},
+
+  // 広 → Radical #53 (广)
+  {s:'广',n:'广 (まだれ) — まだれ',bn:'집/넓다',c:'#a0a080',
+   note:'广 = Radical #53 = 지붕 있는 건물。 広 (ひろい) = 广+ム。 店 (みせ) ও 广 radical।',
+   k:[{k:'広',r:'ひろい・こう',m:'প্রশস্ত'},{k:'店',r:'みせ・てん',m:'দোকান'}]},
+
+  // 高 → Radical #189 (高)
+  {s:'高',n:'高 (たかい/こう) — たかい',bn:'উঁচু / দামি',c:'#e0d060',
+   note:'高 = Radical #189 নিজেই। উঁচু টাওয়ারের pictograph।',
+   k:[{k:'高',r:'たかい・こう',m:'উঁচু/দামি'}]},
+
+  // 赤 → Radical #155 (赤)
+  {s:'赤',n:'赤 (あか/せき) — あかい',bn:'লাল',c:'#e04040',
+   note:'赤 = Radical #155 নিজেই। আগুনের মতো লাল রঙের pictograph।',
+   k:[{k:'赤',r:'あか・せき',m:'লাল'}]},
+
+  // 上下中左右 → position group (各 radical আলাদা, N5 শিক্ষার জন্য একসাথে)
+  {s:'方向',n:'上下中左右 — 位置・方向',bn:'অবস্থান ও দিক',c:'#90c090',
+   note:'অবস্থান বোঝানো N5 kanji। 上 (Rad#2 二), 下 (Rad#1 一), 中 (Rad#2 丨), 右 (Rad#30 口), 左 (Rad#48 工)।',
+   k:[{k:'上',r:'うえ・じょう',m:'উপরে'},{k:'下',r:'した・か',m:'নিচে'},{k:'中',r:'なか・ちゅう',m:'ভেতরে/মাঝে'},{k:'右',r:'みぎ',m:'ডানে'},{k:'左',r:'ひだり',m:'বামে'}]},
+
+  // 東西南北 — direction kanji (different radicals, N5 semantic group)
+  {s:'東西南北',n:'東西南北 — 方角',bn:'কম্পাস দিক',c:'#60c0c0',
+   note:'চারটি প্রধান দিক। 東 (Rad 木#75), 西 (Rad 覀#146), 南 (Rad 十#24), 北 (Rad 匕#21)।',
+   k:[{k:'東',r:'ひがし・とう',m:'পূর্ব'},{k:'西',r:'にし・せい',m:'পশ্চিম'},{k:'南',r:'みなみ・なん',m:'দক্ষিণ'},{k:'北',r:'きた・ほく',m:'উত্তর'}]},
+
+  // 家・会 → 家 Radical #40 (宀), 会 Radical #9 (人)
+  {s:'宀',n:'宀 (うかんむり) — 家・安',bn:'지붕 / 집',c:'#d070a0',
+   note:'宀 = Radical #40 = 지붕이 있는 집。 家 (いえ) = 宀+豕, 安 (やすい) = 宀+女。',
+   k:[{k:'家',r:'いえ・か',m:'বাড়ি'},{k:'安',r:'やすい・あん',m:'সস্তা/শান্তি'}]},
+
+  // 会 → already covered (under 人 or standalone)
+  // 国 → already under 口 (囗 enclosure; 口 and 囗 treated same in N5)
+  // 学 → already under 子
+  // 男 → Radical #102 (田)
+  {s:'田',n:'田 (た/でん) — たへん',bn:'ধানক্ষেত / পুরুষ',c:'#c0a030',
+   note:'田 = Radical #102 = ধানক্ষেতের চিত্র। 男 (おとこ) = 田+力 = ক্ষেতে কাজ করা শক্তিশালী = পুরুষ।',
+   k:[{k:'田',r:'た・でん',m:'ধানক্ষেত'},{k:'男',r:'おとこ・だん',m:'পুরুষ'}]},
+
+  // 友 → Radical #29 (又)
+  // 会 → Radical #9 (人) — 人 গ্রুপে রাখা হয়েছে
+  {s:'又',n:'又 (また/ゆう) — またへん',bn:'আবার / হাত',c:'#c0c090',
+   note:'又 = Radical #29 = ডান হাত। 友 (とも) = 又+又 = দুই হাত ধরা = বন্ধু। 会 কে 人 গ্রুপে রাখা হয়েছে।',
+   k:[{k:'友',r:'とも・ゆう',m:'বন্ধু'}]},
+
+  // 古 already under 口 ✓
+  // Remaining: 後, 何 (already 人), 語 (already 言)
+  // 後 → Radical #60 (彳)
+  {s:'彳',n:'彳 (ぎょうにんべん) — 行・後',bn:'পদক্ষেপ / যাওয়া',c:'#70a0c0',
+   note:'彳 = Radical #60 = 걸어가는 발걸음의 왼쪽。 後 (あと) = 彳+幺+夂。',
+   k:[{k:'後',r:'あと・ご',m:'পরে'}]},
+];
+
+// ── UTILS ──
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const getWrong=(db,q,n=3)=>shuffle(db.filter(x=>x!==q)).slice(0,n);
+const getResult=(c,t)=>{const p=Math.round(c/t*100);if(p>=90)return{e:'🏆',t:'অসাধারণ!'};if(p>=70)return{e:'🎉',t:'দারুণ!'};if(p>=50)return{e:'😊',t:'ভালো চেষ্টা!'};return{e:'📚',t:'আরও practice করো!'};};
+const TOTAL=20;
+const PTITLES={1:'Radical Groups',2:'Single Kanji Game',3:'Compound 二字 Game'};
+
+// ── P1 SINGLE ──
+let p1={mode:'k2m',qs:[],cur:0,score:0,c:0,w:0,streak:0,ms:0,ans:false};
+function p1Mode(m){
+  p1.mode=m;
+  ['p1m1','p1m2','p1m3'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('active');e.style.cssText='';});
+  document.getElementById({k2m:'p1m1',k2r:'p1m2',kn2k:'p1m3'}[m]).classList.add('active');
+  p1Restart();
+}
+function p1Restart(){
+  p1.qs=shuffle([...DB1]).slice(0,TOTAL);p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
+  p1Upd();document.getElementById('p1-area').style.display='block';document.getElementById('p1-res').className='result';p1Render();
+}
+function p1Upd(){document.getElementById('p1-sc').textContent=p1.score;document.getElementById('p1-c').textContent=p1.c;document.getElementById('p1-w').textContent=p1.w;document.getElementById('p1-st').textContent=p1.streak;}
+function p1Render(){
+  const q=p1.qs[p1.cur];
+  document.getElementById('p1-pb').style.width=(p1.cur/TOTAL*100)+'%';
+  document.getElementById('p1-pt').textContent=(p1.cur+1)+'/'+TOTAL;
+  const km=document.getElementById('p1-km'),knm=document.getElementById('p1-knm'),rom=document.getElementById('p1-rom'),kh=document.getElementById('p1-kh'),ql=document.getElementById('p1-ql'),og=document.getElementById('p1-og'),fb=document.getElementById('p1-fb'),nb=document.getElementById('p1-nb');
+  km.className='kbig';knm.className='kana-big';fb.className='fb';fb.textContent='';nb.className='nbtn';p1.ans=false;
+  if(p1.mode==='k2m'){
+    ql.textContent='এই Kanji টার বাংলা অর্থ কী?';km.style.cssText='';km.textContent=q.k;km.style.display='block';knm.style.display='none';rom.style.display='none';kh.style.display='block';kh.textContent=q.r+' ('+q.ro+')';
+    const opts=shuffle([q,...getWrong(DB1,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Sel(${i},${o===q})" id="p1o${i}"><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
+  }else if(p1.mode==='k2r'){
+    ql.textContent='এই Kanji টার পড়া কী?';km.style.cssText='';km.textContent=q.k;km.style.display='block';knm.style.display='none';rom.style.display='none';kh.style.display='none';
+    const opts=shuffle([q,...getWrong(DB1,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Sel(${i},${o===q})" id="p1o${i}"><div class="opt-kana">${o.r.split('・')[0]}</div><span class="opt-tick">✅</span></button>`).join('');
+  }else{
+    ql.textContent='এই Kana এর Kanji কোনটি?';km.style.display='none';kh.style.display='none';knm.style.display='block';knm.textContent=q.r.split('・')[0];rom.style.display='block';rom.textContent=q.ro.split('/')[0];
+    const opts=shuffle([q,...getWrong(DB1,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Sel(${i},${o===q})" id="p1o${i}"><div class="opt-jp">${o.k}</div><span class="opt-tick">✅</span></button>`).join('');
+  }
+}
+function p1Sel(idx,ok){
+  if(p1.ans)return;p1.ans=true;const q=p1.qs[p1.cur];const btns=document.querySelectorAll('#p1-og .opt');const fb=document.getElementById('p1-fb');btns.forEach(b=>b.disabled=true);
+  if(ok){btns[idx].classList.add('correct');if(p1.mode!=='kn2k')document.getElementById('p1-km').classList.add('pop');else document.getElementById('p1-knm').classList.add('pop');p1.score+=10+p1.streak*2;p1.c++;p1.streak++;if(p1.streak>p1.ms)p1.ms=p1.streak;fb.className='fb fb-ok show';fb.innerHTML=`✅ <b>সঠিক!</b> ${q.k} → ${q.r} = ${q.m}${p1.streak>1?' 🔥 '+p1.streak+' Streak!':''}`;}
+  else{btns[idx].classList.add('wrong');btns.forEach(b=>{if(b.getAttribute('onclick').includes('true'))b.classList.add('correct');});if(p1.mode!=='kn2k')document.getElementById('p1-km').classList.add('shake');else document.getElementById('p1-knm').classList.add('shake');p1.w++;p1.streak=0;fb.className='fb fb-no show';fb.innerHTML=`❌ <b>ভুল!</b> ${q.k} → ${q.r} = <b>${q.m}</b>`;}
+  p1Upd();const nb=document.getElementById('p1-nb');nb.textContent=p1.cur+1>=TOTAL?'ফলাফল দেখো 🏆':'পরের প্রশ্ন →';nb.className='nbtn show';
+}
+function p1Next(){
+  p1.cur++;if(p1.cur>=TOTAL){document.getElementById('p1-area').style.display='none';const r=getResult(p1.c,TOTAL);document.getElementById('p1-re').textContent=r.e;document.getElementById('p1-rt').textContent=r.t;document.getElementById('p1-rs').textContent=TOTAL+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p1-rsc').textContent=p1.c+' / '+TOTAL;document.getElementById('p1-rd').textContent=`স্কোর: ${p1.score} | সঠিক: ${p1.c} | ভুল: ${p1.w} | Streak: ${p1.ms}`;document.getElementById('p1-res').className='result show';return;}
+  document.getElementById('p1-nb').className='nbtn';document.getElementById('p1-fb').className='fb';document.getElementById('p1-km').className='kbig';document.getElementById('p1-km').style.cssText='';document.getElementById('p1-knm').className='kana-big';p1Render();
+}
+
+// ── P2 COMPOUND ──
+let p2={mode:'c2m',qs:[],cur:0,score:0,c:0,w:0,streak:0,ms:0,ans:false};
+function p2Mode(m){
+  p2.mode=m;['p2m1','p2m2','p2m3'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('active');e.style.cssText='';});
+  const btn=document.getElementById({c2m:'p2m1',m2c:'p2m2',c2r:'p2m3'}[m]);btn.classList.add('active');
+  if(m==='c2m'){btn.style.borderColor='var(--teal)';btn.style.color='var(--teal)';btn.style.background='var(--tealf)';}
+  p2Restart();
+}
+function p2Restart(){
+  p2.qs=shuffle([...DB2]).slice(0,Math.min(TOTAL,DB2.length));p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
+  p2Upd();document.getElementById('p2-area').style.display='block';document.getElementById('p2-res').className='result';p2Render();
+}
+function p2Upd(){document.getElementById('p2-sc').textContent=p2.score;document.getElementById('p2-c').textContent=p2.c;document.getElementById('p2-w').textContent=p2.w;document.getElementById('p2-st').textContent=p2.streak;}
+function p2Render(){
+  const q=p2.qs[p2.cur];const tQ=p2.qs.length;
+  document.getElementById('p2-pb').style.width=(p2.cur/tQ*100)+'%';document.getElementById('p2-pt').textContent=(p2.cur+1)+'/'+tQ;
+  const cm=document.getElementById('p2-cm'),ck=document.getElementById('p2-ck'),cr=document.getElementById('p2-cr'),og=document.getElementById('p2-og'),fb=document.getElementById('p2-fb'),nb=document.getElementById('p2-nb'),ql=document.getElementById('p2-ql');
+  cm.className='comp-big';fb.className='fb';fb.textContent='';nb.className='nbtn teal';p2.ans=false;
+  if(p2.mode==='c2m'){
+    ql.textContent='এই Compound এর বাংলা অর্থ কী?';cm.style.cssText='display:block';cm.textContent=q.k;ck.style.display='block';ck.textContent=q.r;cr.style.display='block';cr.textContent=q.ro;
+    const opts=shuffle([q,...getWrong(DB2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Sel(${i},${o===q})" id="p2o${i}"><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
+  }else if(p2.mode==='m2c'){
+    ql.textContent='এই অর্থের Compound কোনটি?';cm.style.cssText='display:block;font-family:var(--bn);font-size:24px;color:var(--teal);margin-bottom:10px;line-height:1.5';cm.textContent=q.m;ck.style.display='none';cr.style.display='none';
+    const opts=shuffle([q,...getWrong(DB2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Sel(${i},${o===q})" id="p2o${i}"><div class="opt-jp" style="font-size:30px">${o.k}</div><div style="font-family:var(--jp);font-size:10px;color:var(--muted);margin-top:2px">${o.r}</div><span class="opt-tick">✅</span></button>`).join('');
+  }else{
+    ql.textContent='এই Compound এর পড়া কী?';cm.style.cssText='display:block';cm.textContent=q.k;ck.style.display='none';cr.style.display='none';
+    const opts=shuffle([q,...getWrong(DB2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Sel(${i},${o===q})" id="p2o${i}"><div style="font-family:var(--jp);font-size:14px;font-weight:700;color:var(--text)">${o.r}</div><div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:2px">${o.ro}</div><span class="opt-tick">✅</span></button>`).join('');
+  }
+}
+function p2Sel(idx,ok){
+  if(p2.ans)return;p2.ans=true;const q=p2.qs[p2.cur];const btns=document.querySelectorAll('#p2-og .opt');const fb=document.getElementById('p2-fb');const cm=document.getElementById('p2-cm');btns.forEach(b=>b.disabled=true);
+  if(ok){btns[idx].classList.add('correct');cm.classList.add('pop');p2.score+=10+p2.streak*2;p2.c++;p2.streak++;if(p2.streak>p2.ms)p2.ms=p2.streak;fb.className='fb fb-ok show';fb.innerHTML=`✅ <b>সঠিক!</b> ${q.k}（${q.r}）= ${q.m}${p2.streak>1?' 🔥 '+p2.streak+' Streak!':''}`;}
+  else{btns[idx].classList.add('wrong');btns.forEach(b=>{if(b.getAttribute('onclick').includes('true'))b.classList.add('correct');});cm.classList.add('shake');p2.w++;p2.streak=0;fb.className='fb fb-no show';fb.innerHTML=`❌ <b>ভুল!</b> ${q.k}（${q.r}）= <b>${q.m}</b>`;}
+  p2Upd();const nb=document.getElementById('p2-nb');nb.textContent=p2.cur+1>=p2.qs.length?'ফলাফল দেখো 🏆':'পরের প্রশ্ন →';nb.className='nbtn teal show';
+}
+function p2Next(){
+  p2.cur++;if(p2.cur>=p2.qs.length){document.getElementById('p2-area').style.display='none';const r=getResult(p2.c,p2.qs.length);document.getElementById('p2-re').textContent=r.e;document.getElementById('p2-rt').textContent=r.t;document.getElementById('p2-rs').textContent=p2.qs.length+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p2-rsc').textContent=p2.c+' / '+p2.qs.length;document.getElementById('p2-rd').textContent=`স্কোর: ${p2.score} | সঠিক: ${p2.c} | ভুল: ${p2.w} | Streak: ${p2.ms}`;document.getElementById('p2-res').className='result show';return;}
+  document.getElementById('p2-nb').className='nbtn teal';document.getElementById('p2-fb').className='fb';document.getElementById('p2-cm').className='comp-big';document.getElementById('p2-cm').style.cssText='';p2Render();
+}
+
+// ── P3 RADICALS ──
+let p3Open=new Set(),p3Flt='all';
+function p3Init(){
+  document.getElementById('p3-filter').innerHTML=`<button class="rfbtn active" onclick="p3F('all',this)">সব</button>`+RG.map((g,i)=>`<button class="rfbtn" onclick="p3F(${i},this)" style="font-family:var(--jp)">${g.s}</button>`).join('');
+  p3Render();
+}
+function p3Render(q=''){
+  const el=document.getElementById('p3-groups');const lq=q.toLowerCase().trim();let html='';
+  RG.forEach((g,gi)=>{
+    const kk=lq?g.k.filter(k=>k.k.includes(lq)||k.r.toLowerCase().includes(lq)||k.m.includes(lq)):g.k;
+    if(p3Flt!=='all'&&p3Flt!==gi)return;if(lq&&kk.length===0)return;
+    const open=p3Open.has(gi)||lq.length>0;
+    html+=`<div class="rad-group"><div class="rad-ghdr${open?' open':''}" onclick="p3T(${gi})"><div class="rad-sym" style="color:${g.c}">${g.s}</div><div class="rad-nw"><div class="rad-nm">${g.n}</div><div class="rad-nm-bn">${g.bn}</div></div><div class="rad-cnt" style="color:${g.c};background:${g.c}18;border:1px solid ${g.c}33">${kk.length}টি</div><div class="rad-chev">▶</div></div><div class="rad-body${open?' open':''}"><div class="rad-kgrid">${kk.map(k=>`<div class="rk" onclick="kmodalShow('${k.k}','${g.c}')"><div class="rk-k">${k.k}</div><div class="rk-r">${k.r}</div><div class="rk-m">${k.m}</div></div>`).join('')}</div>${g.note?`<div class="rad-note">💡 ${g.note}</div>`:''}</div></div>`;
+  });
+  el.innerHTML=html||'<div style="text-align:center;color:var(--muted);padding:28px;font-size:13px">কোনো ফলাফল নেই 😔</div>';
+  document.getElementById('p3-oc').textContent=p3Open.size;
+}
+function p3T(gi){p3Open.has(gi)?p3Open.delete(gi):p3Open.add(gi);p3Render(document.getElementById('p3-s').value);}
+function p3F(v,btn){p3Flt=v;document.querySelectorAll('.rfbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(v!=='all')p3Open.add(v);p3Render(document.getElementById('p3-s').value);}
+function p3Search(v){p3Render(v);}
+
+// ── REFS ──
+function renderRefs(){
+  document.getElementById('p1-rg').innerHTML=DB1.map(k=>`<div class="ri" onclick="kmodalShow('${k.k}','#9060d0')" style="cursor:pointer"><div class="ri-k">${k.k}</div><div class="ri-r">${k.r.split('・')[0]}</div><div class="ri-m">${k.m}</div></div>`).join('');
+  document.getElementById('p2-rg').innerHTML=DB2.map(k=>`<div class="cri" onclick="kmodalShowCompound('${k.k}','${k.r}','${k.ro}','${k.m}')" style="cursor:pointer"><div class="cri-k">${k.k}</div><div class="cri-r">${k.r}</div><div class="cri-m">${k.m}</div></div>`).join('');
+}
+
+// ── PAGE SWITCH ──
+function sw(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page'+n).classList.add('active');
+  document.getElementById('tab'+n).classList.add('active');
+  window.scrollTo(0,0);
+  if(n===1)document.getElementById('p3-oc').textContent=p3Open.size;
+}
+
+// ── KANJI MODAL ──
+function kmodalShowCompound(kanji, reading, romaji, meaning){
+  const km = document.getElementById('km-k');
+  km.textContent = kanji;
+  km.style.background = 'linear-gradient(135deg,#30c0b0,#a0ede4,#1a8a80)';
+  km.style.webkitBackgroundClip = 'text';
+  km.style.webkitTextFillColor = 'transparent';
+  km.style.backgroundClip = 'text';
+
+  document.getElementById('km-m').textContent = meaning;
+
+  const kunRow = document.getElementById('km-kun-row');
+  const onRow  = document.getElementById('km-on-row');
+  kunRow.querySelector('.kmodal-tag').textContent = 'よみかた';
+  document.getElementById('km-kun').textContent = reading;
+  document.getElementById('km-ro').textContent = romaji;
+  kunRow.style.display = 'flex';
+  onRow.style.display = 'none';
+
+  const radEl = document.getElementById('km-rad');
+  radEl.innerHTML = '🔤 二字熟語 — Compound Kanji';
+  radEl.style.display = 'block';
+
+  document.getElementById('kmodal-bd').classList.remove('hide');
+  document.body.style.overflow = 'hidden';
+}
+
+function kmodalShow(kanji, color){
+  // lookup in DB1 for full details
+  const d = DB1.find(x=>x.k===kanji);
+  const el = document.getElementById('kmodal');
+
+  // kanji character with group color
+  const km = document.getElementById('km-k');
+  km.textContent = kanji;
+  km.style.background = `linear-gradient(135deg,${color},#fff,${color})`;
+  km.style.webkitBackgroundClip = 'text';
+  km.style.webkitTextFillColor = 'transparent';
+  km.style.backgroundClip = 'text';
+
+  if(d){
+    document.getElementById('km-m').textContent = d.m;
+
+    // reset kun tag label (may have been changed by compound modal)
+    document.getElementById('km-kun-row').querySelector('.kmodal-tag').textContent = 'くんよみ';
+
+    // split kun/on: format is "くんよみ・おんよみ"
+    const parts = d.r.split('・');
+    const kunRow = document.getElementById('km-kun-row');
+    const onRow  = document.getElementById('km-on-row');
+
+    if(parts.length >= 2){
+      document.getElementById('km-kun').textContent = parts[0];
+      document.getElementById('km-on').textContent  = parts[1];
+      kunRow.style.display = 'flex';
+      onRow.style.display  = 'flex';
+    } else {
+      // only one reading — show as kun if hiragana-ish, else on
+      const isHira = /^[ぁ-ん]/.test(parts[0]);
+      if(isHira){
+        document.getElementById('km-kun').textContent = parts[0];
+        kunRow.style.display = 'flex';
+        onRow.style.display  = 'none';
+      } else {
+        document.getElementById('km-on').textContent = parts[0];
+        kunRow.style.display = 'none';
+        onRow.style.display  = 'flex';
+      }
+    }
+
+    document.getElementById('km-ro').textContent = d.ro;
+
+    // find which RG group this kanji belongs to
+    const grp = RG.find(g=>g.k.some(x=>x.k===kanji));
+    const radEl = document.getElementById('km-rad');
+    if(grp){
+      radEl.innerHTML = `🧩 Radical: <b style="color:${grp.c};font-family:var(--jp)">${grp.s}</b> — ${grp.bn}`;
+      radEl.style.display = 'block';
+    } else {
+      radEl.style.display = 'none';
+    }
+  }
+
+  document.getElementById('kmodal-bd').classList.remove('hide');
+  document.body.style.overflow = 'hidden';
+}
+function kmodalHide(){
+  document.getElementById('kmodal-bd').classList.add('hide');
+  document.body.style.overflow = '';
+}
+function kmodalClose(e){
+  if(e.target === document.getElementById('kmodal-bd')) kmodalHide();
+}
+
+// INIT
+p1Restart();p2Restart();renderRefs();p3Init();
+</script>
+
+<!-- PAGE 4: MOCK TEST -->
+<div class="page" id="page4">
+<div class="wrap">
+  <div class="phdr">
+    <div class="phdr-jp" style="font-size:36px">模擬試験</div>
+    <div class="phdr-ttl">JLPT N5 Mock Test</div>
+    <div class="phdr-sub">১৫টি Level — প্রতিটিতে ৩৫টি প্রশ্ন • ৮০% পেলে পরের Level খুলবে</div>
+  </div>
+
+  <!-- Level Select Screen -->
+  <div id="mt-select">
+    <div class="mt-lvl-grid" id="mt-lvl-grid"></div>
+  </div>
+
+  <!-- Test Screen -->
+  <div id="mt-test" style="display:none">
+    <div class="mt-hdr">
+      <div class="mt-hdr-lvl" id="mt-lvl-badge">L1</div>
+      <div class="mt-hdr-info">
+        <div class="mt-hdr-title" id="mt-test-title">Level 1 — Mock Test</div>
+        <div class="mt-hdr-sub" id="mt-test-sub">প্রশ্ন ১ / ৩৫</div>
+      </div>
+      <button onclick="mtExitConfirm()" style="background:none;border:1px solid var(--bdr);border-radius:8px;color:var(--muted);padding:6px 10px;font-size:11px;cursor:pointer;">✕ বের হও</button>
+    </div>
+    <div class="gcard" id="mt-qcard">
+      <div class="pwrap"><div class="pbar"><div class="pfill" id="mt-pb" style="width:0%"></div></div><div class="ptxt" id="mt-pt">1/35</div></div>
+      <div style="text-align:center;margin-bottom:6px">
+        <span class="mt-q-type reading" id="mt-qtype">Kanji → Reading</span>
+      </div>
+      <div class="qlbl" id="mt-ql" style="margin-bottom:6px"></div>
+      <div class="mt-sentence" id="mt-sentence"></div>
+      <div class="ogrid" id="mt-og"></div>
+      <div class="fb" id="mt-fb"></div>
+      <button class="nbtn" id="mt-nb" onclick="mtNext()" style="display:none">পরের প্রশ্ন →</button>
+    </div>
+  </div>
+
+  <!-- Result Screen -->
+  <div id="mt-result" style="display:none">
+    <div class="mt-summary">
+      <div class="rbig" id="mt-re">📝</div>
+      <div class="mt-pct" id="mt-pct">0%</div>
+      <div class="rtitle" id="mt-rt"></div>
+      <div class="rsub" id="mt-rs"></div>
+      <div class="mt-unlock-msg" id="mt-unlock"></div>
+      <div class="rdetail" id="mt-rd"></div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="rbtn" onclick="mtRetry()" style="padding:12px 22px;font-size:13px">আবার চেষ্টা 🔄</button>
+        <button class="rbtn" onclick="mtBackToSelect()" style="background:linear-gradient(135deg,var(--surf3),var(--surf2));color:var(--text);padding:12px 22px;font-size:13px">সব Level দেখো 📋</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── MOCK TEST ENGINE ──
+
+// All JLPT-style questions pool: type 'reading' = Kanji in sentence → pick hiragana
+// type 'kanji' = hiragana in sentence → pick Kanji
+// Each question: {type, sentence, target, answer, opts:[...4]}
+// sentence uses __TARGET__ as placeholder, target is the word shown
+
+const MT_POOL = [
+  // ── READING TYPE (Kanji → Reading) ──
+  {type:'reading',sentence:'「学校」は あそこ です。',target:'学校',answer:'がっこう',meaning:'স্কুল',opts:['がっこう','がっこ','かっこう','かっこ']},
+  {type:'reading',sentence:'「今日」は あつい ですね。',target:'今日',answer:'きょう',meaning:'আজ',opts:['こんにち','こんじつ','こんきょ','きょう']},
+  {type:'reading',sentence:'「先生」は しんせつ です。',target:'先生',answer:'せんせい',meaning:'শিক্ষক',opts:['せんじょう','せんせい','せんじ','せんぜい']},
+  {type:'reading',sentence:'「電話」を かけて ください。',target:'電話',answer:'でんわ',meaning:'টেলিফোন',opts:['でんわ','でんか','でんぱ','でんま']},
+  {type:'reading',sentence:'「山」が きれい です。',target:'山',answer:'やま',meaning:'পাহাড়',opts:['やま','さん','うみ','かわ']},
+  {type:'reading',sentence:'「水」を のみます。',target:'水',answer:'みず',meaning:'পানি',opts:['みず','ゆき','かぜ','そら']},
+  {type:'reading',sentence:'「父」は かいしゃに います。',target:'父',answer:'ちち',meaning:'বাবা',opts:['ちち','はは','いもうと','おとうと']},
+  {type:'reading',sentence:'「母」は りょうりが じょうずです。',target:'母',answer:'はは',meaning:'মা',opts:['はは','ちち','あね','あに']},
+  {type:'reading',sentence:'「友」だちと えいがを みます。',target:'友',answer:'とも',meaning:'বন্ধু',opts:['とも','ゆう','こい','あい']},
+  {type:'reading',sentence:'「日本語」を べんきょうします。',target:'日本語',answer:'にほんご',meaning:'জাপানি ভাষা',opts:['にほんご','にっぽんご','にほんご','じゃぱんご']},
+  {type:'reading',sentence:'「大学」で べんきょうします。',target:'大学',answer:'だいがく',meaning:'বিশ্ববিদ্যালয়',opts:['だいがく','おおがく','たいがく','だいかく']},
+  {type:'reading',sentence:'「時間」が ありません。',target:'時間',answer:'じかん',meaning:'সময়',opts:['じかん','ときかん','しかん','じかい']},
+  {type:'reading',sentence:'「毎日」 うんどうします。',target:'毎日',answer:'まいにち',meaning:'প্রতিদিন',opts:['まいにち','まいひ','めいにち','まいじつ']},
+  {type:'reading',sentence:'「来年」 にほんへ いきます。',target:'来年',answer:'らいねん',meaning:'আগামী বছর',opts:['らいねん','きねん','こねん','らいとし']},
+  {type:'reading',sentence:'「午前」は いそがしい です。',target:'午前',answer:'ごぜん',meaning:'সকাল (AM)',opts:['ごぜん','ごまえ','ごぜい','ごすすむ']},
+  {type:'reading',sentence:'「電気」を けして ください。',target:'電気',answer:'でんき',meaning:'বিদ্যুৎ',opts:['でんき','でんか','てんき','でんぎ']},
+  {type:'reading',sentence:'「入口」は どこ ですか。',target:'入口',answer:'いりぐち',meaning:'প্রবেশদ্বার',opts:['いりぐち','にゅうこう','いりくち','にゅうぐち']},
+  {type:'reading',sentence:'「出口」は あちら です。',target:'出口',answer:'でぐち',meaning:'বাহির দরজা',opts:['でぐち','しゅつぐち','でくち','しゅっこう']},
+  {type:'reading',sentence:'「今月」は いそがしい です。',target:'今月',answer:'こんげつ',meaning:'এই মাস',opts:['こんげつ','こんつき','いまつき','こんにち']},
+  {type:'reading',sentence:'「先週」 どこへ いきましたか。',target:'先週',answer:'せんしゅう',meaning:'গত সপ্তাহ',opts:['せんしゅう','まえしゅう','さきしゅう','せんじゅう']},
+  {type:'reading',sentence:'「来週」 テストが あります。',target:'来週',answer:'らいしゅう',meaning:'আগামী সপ্তাহ',opts:['らいしゅう','こしゅう','きしゅう','らいじゅう']},
+  {type:'reading',sentence:'「今週」は いい てんきですね。',target:'今週',answer:'こんしゅう',meaning:'এই সপ্তাহ',opts:['こんしゅう','いましゅう','こんじゅう','きしゅう']},
+  {type:'reading',sentence:'「半分」 たべました。',target:'半分',answer:'はんぶん',meaning:'অর্ধেক',opts:['はんぶん','なかぶん','はんふん','はんわけ']},
+  {type:'reading',sentence:'「外国人」が おおい です。',target:'外国人',answer:'がいこくじん',meaning:'বিদেশি মানুষ',opts:['がいこくじん','そとくにひと','がいこうじん','がいこくひと']},
+  {type:'reading',sentence:'「手紙」を かきます。',target:'手紙',answer:'てがみ',meaning:'চিঠি',opts:['てがみ','しゅし','てし','しゅがみ']},
+  {type:'reading',sentence:'「休日」は なにを しますか。',target:'休日',answer:'きゅうじつ',meaning:'ছুটির দিন',opts:['きゅうじつ','やすみひ','きゅうにち','やすびょう']},
+  {type:'reading',sentence:'「大人」に なりました。',target:'大人',answer:'おとな',meaning:'প্রাপ্তবয়স্ক',opts:['おとな','だいじん','おおひと','たいじん']},
+  {type:'reading',sentence:'「名前」を おしえて ください。',target:'名前',answer:'なまえ',meaning:'নাম',opts:['なまえ','めいぜん','なまえ','みょうじ']},
+  {type:'reading',sentence:'「東」の そらが あかい。',target:'東',answer:'ひがし',meaning:'পূর্ব',opts:['ひがし','にし','みなみ','きた']},
+  {type:'reading',sentence:'「西」へ すすみます。',target:'西',answer:'にし',meaning:'পশ্চিম',opts:['にし','ひがし','みなみ','きた']},
+  {type:'reading',sentence:'「南」の くにへ いきたい。',target:'南',answer:'みなみ',meaning:'দক্ষিণ',opts:['みなみ','きた','ひがし','にし']},
+  {type:'reading',sentence:'「北」は さむい です。',target:'北',answer:'きた',meaning:'উত্তর',opts:['きた','みなみ','ひがし','にし']},
+  {type:'reading',sentence:'「中学校」に かよいます。',target:'中学校',answer:'ちゅうがっこう',meaning:'মাধ্যমিক বিদ্যালয়',opts:['ちゅうがっこう','なかがっこう','ちゅうがくこ','ちゅうかっこ']},
+  {type:'reading',sentence:'「小学校」の せんせい です。',target:'小学校',answer:'しょうがっこう',meaning:'প্রাথমিক বিদ্যালয়',opts:['しょうがっこう','ちいさがっこう','しょうがくこ','こがっこ']},
+  {type:'reading',sentence:'「今年」は たのしかった。',target:'今年',answer:'ことし',meaning:'এই বছর',opts:['ことし','こんねん','いまとし','こんとし']},
+  {type:'reading',sentence:'「毎月」 ちょきんします。',target:'毎月',answer:'まいつき',meaning:'প্রতি মাস',opts:['まいつき','まいがつ','めいつき','まいじつ']},
+  {type:'reading',sentence:'「毎年」 はるになると はなが さく。',target:'毎年',answer:'まいとし',meaning:'প্রতি বছর',opts:['まいとし','まいねん','めいねん','まいじゅう']},
+  {type:'reading',sentence:'「高校」を そつぎょうしました。',target:'高校',answer:'こうこう',meaning:'উচ্চ বিদ্যালয়',opts:['こうこう','たかこう','こうきょう','たかっこう']},
+  {type:'reading',sentence:'「先月」 りょこうしました。',target:'先月',answer:'せんげつ',meaning:'গত মাস',opts:['せんげつ','まえつき','せんつき','さきげつ']},
+  {type:'reading',sentence:'「水曜」は ひまです。',target:'水曜',answer:'すいよう',meaning:'বুধবার',opts:['すいよう','みずよう','みずび','すいび']},
+  {type:'reading',sentence:'「金曜」に えいがを みます。',target:'金曜',answer:'きんよう',meaning:'শুক্রবার',opts:['きんよう','かねよう','きんび','かねび']},
+  {type:'reading',sentence:'「土曜」は やすみ です。',target:'土曜',answer:'どよう',meaning:'শনিবার',opts:['どよう','つちよう','どび','とよう']},
+  {type:'reading',sentence:'「日曜」に こうえんへ いきます。',target:'日曜',answer:'にちよう',meaning:'রবিবার',opts:['にちよう','ひよう','にちび','にっよう']},
+  {type:'reading',sentence:'「月曜」は かいぎが あります。',target:'月曜',answer:'げつよう',meaning:'সোমবার',opts:['げつよう','つきよう','げつび','がつよう']},
+  {type:'reading',sentence:'「火曜」に テストが あります。',target:'火曜',answer:'かよう',meaning:'মঙ্গলবার',opts:['かよう','ひよう','かび','ひび']},
+  {type:'reading',sentence:'「木曜」は にぎやかです。',target:'木曜',answer:'もくよう',meaning:'বৃহস্পতিবার',opts:['もくよう','きよう','もくび','きび']},
+  {type:'reading',sentence:'「午後」 でかけます。',target:'午後',answer:'ごご',meaning:'বিকেল (PM)',opts:['ごご','ごぜん','ひるご','ごあと']},
+  {type:'reading',sentence:'「今日」は いい てんきです。',target:'今日',answer:'きょう',meaning:'আজ',opts:['きょう','こんにち','こんじつ','いまひ']},
+  {type:'reading',sentence:'「日本人」と はなします。',target:'日本人',answer:'にほんじん',meaning:'জাপানি মানুষ',opts:['にほんじん','にっぽんじん','じゃぱんじん','にほんひと']},
+  {type:'reading',sentence:'「学生」です。',target:'学生',answer:'がくせい',meaning:'ছাত্র',opts:['がくせい','まなぶせい','がくしょう','まなびせい']},
+  {type:'reading',sentence:'「大雨」が ふりました。',target:'大雨',answer:'おおあめ',meaning:'ভারী বৃষ্টি',opts:['おおあめ','だいう','おおう','たいあめ']},
+  {type:'reading',sentence:'「車道」を わたらないで ください。',target:'車道',answer:'しゃどう',meaning:'গাড়ির রাস্তা',opts:['しゃどう','くるまみち','くるまどう','しゃみち']},
+  {type:'reading',sentence:'「人口」が ふえています。',target:'人口',answer:'じんこう',meaning:'জনসংখ্যা',opts:['じんこう','ひとくち','じんくち','ひとこう']},
+
+  // ── KANJI TYPE (Hiragana → Kanji) ──
+  {type:'kanji',sentence:'あしたは 「はれ」 です。',target:'はれ',answer:'晴れ',meaning:'রোদ /맑음',opts:['晴れ','雪れ','曇れ','雨れ']},
+  {type:'kanji',sentence:'「かいもの」に いきます。',target:'かいもの',answer:'買い物',meaning:'কেনাকাটা',opts:['買い物','買物','見物','貝物']},
+  {type:'kanji',sentence:'いえに 「かえる」。',target:'かえる',answer:'帰る',meaning:'ফিরে যাওয়া',opts:['帰る','変える','代える','替える']},
+  {type:'kanji',sentence:'「あさ」 ごはんを たべます。',target:'あさ',answer:'朝',meaning:'সকাল',opts:['朝','晩','昼','夕']},
+  {type:'kanji',sentence:'「ひる」 やすみに でかけます。',target:'ひる',answer:'昼',meaning:'দুপুর',opts:['昼','朝','夜','夕']},
+  {type:'kanji',sentence:'「よる」 おそく ねます。',target:'よる',answer:'夜',meaning:'রাত',opts:['夜','昼','朝','夕']},
+  {type:'kanji',sentence:'「みず」を ください。',target:'みず',answer:'水',meaning:'পানি',opts:['水','茶','酒','湯']},
+  {type:'kanji',sentence:'「やま」に のぼります。',target:'やま',answer:'山',meaning:'পাহাড়',opts:['山','川','海','島']},
+  {type:'kanji',sentence:'「かわ」で およぎます。',target:'かわ',answer:'川',meaning:'নদী',opts:['川','山','海','池']},
+  {type:'kanji',sentence:'「きた」へ いきます。',target:'きた',answer:'北',meaning:'উত্তর',opts:['北','南','東','西']},
+  {type:'kanji',sentence:'「みなみ」の しまへ いきたい。',target:'みなみ',answer:'南',meaning:'দক্ষিণ',opts:['南','北','東','西']},
+  {type:'kanji',sentence:'「ひがし」の そらが きれい。',target:'ひがし',answer:'東',meaning:'পূর্ব',opts:['東','西','南','北']},
+  {type:'kanji',sentence:'「にし」に たいようが しずむ。',target:'にし',answer:'西',meaning:'পশ্চিম',opts:['西','東','南','北']},
+  {type:'kanji',sentence:'「おおきい」 いぬが います。',target:'おおきい',answer:'大きい',meaning:'বড়',opts:['大きい','小さい','長い','高い']},
+  {type:'kanji',sentence:'「ちいさい」 こが あそんでいる。',target:'ちいさい',answer:'小さい',meaning:'ছোট',opts:['小さい','大きい','少ない','短い']},
+  {type:'kanji',sentence:'「あたらしい」 かばんを かいました。',target:'あたらしい',answer:'新しい',meaning:'নতুন',opts:['新しい','古い','高い','安い']},
+  {type:'kanji',sentence:'「ふるい」 ほんが あります。',target:'ふるい',answer:'古い',meaning:'পুরোনো',opts:['古い','新しい','長い','広い']},
+  {type:'kanji',sentence:'「しろい」 はなが さいた。',target:'しろい',answer:'白い',meaning:'সাদা',opts:['白い','赤い','青い','黄い']},
+  {type:'kanji',sentence:'「あかい」 くるまを みました。',target:'あかい',answer:'赤い',meaning:'লাল',opts:['赤い','白い','青い','黒い']},
+  {type:'kanji',sentence:'「たかい」 やまに のぼります。',target:'たかい',answer:'高い',meaning:'উঁচু / দামি',opts:['高い','低い','長い','広い']},
+  {type:'kanji',sentence:'「やすい」 みせで かいます。',target:'やすい',answer:'安い',meaning:'সস্তা',opts:['安い','高い','近い','遠い']},
+  {type:'kanji',sentence:'「ながい」 みちを あるきました。',target:'ながい',answer:'長い',meaning:'লম্বা',opts:['長い','短い','広い','狭い']},
+  {type:'kanji',sentence:'「おおい」 ひとが あつまっている。',target:'おおい',answer:'多い',meaning:'অনেক',opts:['多い','少ない','大きい','高い']},
+  {type:'kanji',sentence:'「すくない」 じかんで できました。',target:'すくない',answer:'少ない',meaning:'কম',opts:['少ない','多い','小さい','短い']},
+  {type:'kanji',sentence:'「ちかい」 えきまで あるきます。',target:'ちかい',answer:'近い',meaning:'কাছে',opts:['近い','遠い','高い','低い']},
+  {type:'kanji',sentence:'「はなす」 のが すきです。',target:'はなす',answer:'話す',meaning:'কথা বলা',opts:['話す','読む','書く','聞く']},
+  {type:'kanji',sentence:'「よむ」 のが すきです。',target:'よむ',answer:'読む',meaning:'পড়া',opts:['読む','書く','話す','聞く']},
+  {type:'kanji',sentence:'「かく」 れんしゅうを します。',target:'かく',answer:'書く',meaning:'লেখা',opts:['書く','読む','聞く','話す']},
+  {type:'kanji',sentence:'「きく」 のが たのしい。',target:'きく',answer:'聞く',meaning:'শোনা',opts:['聞く','話す','読む','書く']},
+  {type:'kanji',sentence:'「たべる」 のが すきです。',target:'たべる',answer:'食べる',meaning:'খাওয়া',opts:['食べる','飲む','作る','買う']},
+  {type:'kanji',sentence:'「のむ」 のが きらいです。',target:'のむ',answer:'飲む',meaning:'পান করা',opts:['飲む','食べる','買う','見る']},
+  {type:'kanji',sentence:'「みる」 のが すきです。',target:'みる',answer:'見る',meaning:'দেখা',opts:['見る','聞く','読む','書く']},
+  {type:'kanji',sentence:'「いく」 まえに でんわします。',target:'いく',answer:'行く',meaning:'যাওয়া',opts:['行く','来る','帰る','出る']},
+  {type:'kanji',sentence:'「くる」 のを まっています。',target:'くる',answer:'来る',meaning:'আসা',opts:['来る','行く','帰る','入る']},
+  {type:'kanji',sentence:'「かう」 ものが あります。',target:'かう',answer:'買う',meaning:'কেনা',opts:['買う','売る','見る','作る']},
+  {type:'kanji',sentence:'「はいる」 まえに ノックします。',target:'はいる',answer:'入る',meaning:'প্রবেশ করা',opts:['入る','出る','来る','帰る']},
+  {type:'kanji',sentence:'「でる」 じかんに なりました。',target:'でる',answer:'出る',meaning:'বের হওয়া',opts:['出る','入る','行く','来る']},
+  {type:'kanji',sentence:'「やすむ」 ひが すくない。',target:'やすむ',answer:'休む',meaning:'বিশ্রাম নেওয়া',opts:['休む','起きる','働く','遊ぶ']},
+  {type:'kanji',sentence:'「たつ」 ひとが おおい。',target:'たつ',answer:'立つ',meaning:'দাঁড়ানো',opts:['立つ','座る','走る','歩く']},
+  {type:'kanji',sentence:'「あるく」 のが たのしい。',target:'あるく',answer:'歩く',meaning:'হাঁটা',opts:['歩く','走る','止まる','立つ']},
+  {type:'kanji',sentence:'「はしる」 れんしゅうを します。',target:'はしる',answer:'走る',meaning:'দৌড়ানো',opts:['走る','歩く','止まる','泳ぐ']},
+  {type:'kanji',sentence:'「いう」 ことを きいて ください。',target:'いう',answer:'言う',meaning:'বলা',opts:['言う','話す','聞く','思う']},
+  {type:'kanji',sentence:'「おもう」 ことを いいます。',target:'おもう',answer:'思う',meaning:'মনে করা',opts:['思う','言う','考える','見る']},
+  {type:'kanji',sentence:'「しる」 ひとが いました。',target:'しる',answer:'知る',meaning:'জানা',opts:['知る','見る','思う','言う']},
+  {type:'kanji',sentence:'「すむ」 まちが すきです。',target:'すむ',answer:'住む',meaning:'বাস করা',opts:['住む','行く','来る','帰る']},
+  {type:'kanji',sentence:'「くに」へ かえります。',target:'くに',answer:'国',meaning:'দেশ',opts:['国','家','店','学校']},
+  {type:'kanji',sentence:'「いえ」に かえります。',target:'いえ',answer:'家',meaning:'বাড়ি',opts:['家','国','店','会社']},
+  {type:'kanji',sentence:'「みせ」で ランチを たべます。',target:'みせ',answer:'店',meaning:'দোকান',opts:['店','家','学校','会社']},
+  {type:'kanji',sentence:'「うえ」に あります。',target:'うえ',answer:'上',meaning:'উপরে',opts:['上','下','中','右']},
+  {type:'kanji',sentence:'「した」に おきます。',target:'した',answer:'下',meaning:'নিচে',opts:['下','上','中','左']},
+  {type:'kanji',sentence:'「なか」に はいります。',target:'なか',answer:'中',meaning:'ভেতরে',opts:['中','上','外','下']},
+  {type:'kanji',sentence:'「そと」で あそびます。',target:'そと',answer:'外',meaning:'বাইরে',opts:['外','中','上','下']},
+  {type:'kanji',sentence:'「みぎ」に まがります。',target:'みぎ',answer:'右',meaning:'ডানে',opts:['右','左','上','下']},
+  {type:'kanji',sentence:'「ひだり」に まがって ください。',target:'ひだり',answer:'左',meaning:'বামে',opts:['左','右','上','下']},
+  {type:'kanji',sentence:'「ゆき」が ふっています。',target:'ゆき',answer:'雪',meaning:'তুষার',opts:['雪','雨','雲','空']},
+  {type:'kanji',sentence:'「くも」が でてきました。',target:'くも',answer:'雲',meaning:'মেঘ',opts:['雲','雨','雪','空']},
+  {type:'kanji',sentence:'「あめ」が ふりました。',target:'あめ',answer:'雨',meaning:'বৃষ্টি',opts:['雨','雪','雲','風']},
+  {type:'kanji',sentence:'「そら」が あおいです。',target:'そら',answer:'空',meaning:'আকাশ',opts:['空','海','山','川']},
+  {type:'kanji',sentence:'「はな」が さいています。',target:'はな',answer:'花',meaning:'ফুল',opts:['花','木','草','葉']},
+  {type:'kanji',sentence:'「き」が たくさん あります。',target:'き',answer:'木',meaning:'গাছ',opts:['木','花','草','竹']},
+  {type:'kanji',sentence:'「さかな」を たべます。',target:'さかな',answer:'魚',meaning:'মাছ',opts:['魚','肉','野菜','果物']},
+  {type:'kanji',sentence:'「ひと」が たくさん います。',target:'ひと',answer:'人',meaning:'মানুষ',opts:['人','子','男','女']},
+  {type:'kanji',sentence:'「おとこ」の こが います。',target:'おとこ',answer:'男',meaning:'পুরুষ',opts:['男','女','子','人']},
+  {type:'kanji',sentence:'「おんな」の ひとが きました。',target:'おんな',answer:'女',meaning:'নারী',opts:['女','男','人','子']},
+  {type:'kanji',sentence:'「こ」どもが あそんでいます。',target:'こ',answer:'子',meaning:'শিশু',opts:['子','男','女','人']},
+  {type:'kanji',sentence:'「て」を あらいます。',target:'て',answer:'手',meaning:'হাত',opts:['手','足','目','耳']},
+  {type:'kanji',sentence:'「あし」が いたい です。',target:'あし',answer:'足',meaning:'পা',opts:['足','手','目','口']},
+  {type:'kanji',sentence:'「め」が わるい です。',target:'め',answer:'目',meaning:'চোখ',opts:['目','耳','口','手']},
+  {type:'kanji',sentence:'「みみ」が いい ひとです。',target:'みみ',answer:'耳',meaning:'কান',opts:['耳','目','口','手']},
+  {type:'kanji',sentence:'「くち」を あけて ください。',target:'くち',answer:'口',meaning:'মুখ',opts:['口','耳','目','手']},
+  {type:'kanji',sentence:'「まえ」に すすみます。',target:'まえ',answer:'前',meaning:'সামনে',opts:['前','後','上','下']},
+  {type:'kanji',sentence:'「あと」で でかけます。',target:'あと',answer:'後',meaning:'পরে',opts:['後','前','上','下']},
+  {type:'kanji',sentence:'「なん」ですか。',target:'なん',answer:'何',meaning:'কী',opts:['何','誰','何処','何時']},
+  {type:'kanji',sentence:'「いま」 なんじですか。',target:'いま',answer:'今',meaning:'এখন',opts:['今','前','後','昨']},
+  {type:'kanji',sentence:'「とき」が たちました。',target:'とき',answer:'時',meaning:'সময়',opts:['時','間','分','時間']},
+  {type:'kanji',sentence:'「ふん」が たちました。',target:'ふん',answer:'分',meaning:'মিনিট',opts:['分','時','秒','刻']},
+  {type:'kanji',sentence:'「はん」 すぎに きます。',target:'はん',answer:'半',meaning:'অর্ধেক',opts:['半','分','時','間']},
+  {type:'kanji',sentence:'「ねん」に いちど いきます。',target:'ねん',answer:'年',meaning:'বছর',opts:['年','月','週','日']},
+  {type:'kanji',sentence:'「つき」が きれい です。',target:'つき',answer:'月',meaning:'চাঁদ',opts:['月','日','星','空']},
+  {type:'kanji',sentence:'「しゅう」に いちど あいます。',target:'しゅう',answer:'週',meaning:'সপ্তাহ',opts:['週','月','年','日']},
+  {type:'kanji',sentence:'「まい」にち れんしゅうします。',target:'まい',answer:'毎',meaning:'প্রতি',opts:['毎','各','全','先']},
+  {type:'kanji',sentence:'「ひゃく」えん もっています。',target:'ひゃく',answer:'百',meaning:'একশো',opts:['百','千','万','十']},
+  {type:'kanji',sentence:'「せん」えん かかります。',target:'せん',answer:'千',meaning:'হাজার',opts:['千','百','万','十']},
+  {type:'kanji',sentence:'「まん」えん はらいました。',target:'まん',answer:'万',meaning:'দশ হাজার',opts:['万','千','百','十']},
+  {type:'kanji',sentence:'「えん」を もっていますか。',target:'えん',answer:'円',meaning:'ইয়েন',opts:['円','万','千','百']},
+];
+
+// ── Level config: 15 levels, each pulls 35 questions ──
+const MT_LEVELS = Array.from({length:15},(_,i)=>({
+  num:i+1,
+  label:`Level ${i+1}`,
+  theme: i<5?'basic': i<10?'intermediate':'advanced'
+}));
+
+// State
+let mtState = {
+  level:0,
+  qs:[],
+  cur:0,
+  correct:0,
+  wrong:0,
+  answered:false,
+  scores: JSON.parse(localStorage.getItem('mt_scores')||'{}'),
+};
+
+function mtSaveScores(){
+  try{localStorage.setItem('mt_scores',JSON.stringify(mtState.scores));}catch(e){}
+}
+
+function mtIsUnlocked(lvl){
+  if(lvl===1) return true;
+  const prev = mtState.scores['l'+(lvl-1)];
+  if(!prev) return false;
+  return prev.pct >= 80;
+}
+
+function mtGetQuestions(level){
+  // Each level uses a seeded subset of the pool for variety
+  const pool = [...MT_POOL];
+  // Deterministic shuffle per level
+  const seed = level * 31 + 7;
+  for(let i=pool.length-1;i>0;i--){
+    const j = (seed * (i+1) * 1103515245 + 12345) % (i+1);
+    [pool[i],pool[j]]=[pool[j],pool[i]];
+  }
+  // Mix reading/kanji types
+  const reading = pool.filter(q=>q.type==='reading');
+  const kanji = pool.filter(q=>q.type==='kanji');
+  const result = [];
+  let ri=0,ki=0;
+  for(let i=0;i<35;i++){
+    if(i%2===0 && ri<reading.length) result.push(reading[ri++]);
+    else if(ki<kanji.length) result.push(kanji[ki++]);
+    else if(ri<reading.length) result.push(reading[ri++]);
+  }
+  return result.slice(0,35);
+}
+
+function mtRenderSelect(){
+  const grid = document.getElementById('mt-lvl-grid');
+  grid.innerHTML = '';
+  MT_LEVELS.forEach(lv=>{
+    const score = mtState.scores['l'+lv.num];
+    const locked = !mtIsUnlocked(lv.num);
+    const done = score && score.pct >= 80;
+    let cls = locked ? 'locked' : done ? 'completed' : 'unlocked';
+    const card = document.createElement('div');
+    card.className = 'mt-lvl-card '+cls;
+
+    if(locked){
+      card.innerHTML = '<div class="mt-lvl-lock">🔒</div><div class="mt-lvl-num" style="color:var(--muted)">'+lv.num+'</div><div class="mt-lvl-lbl">ধাপ '+lv.num+'</div>';
+      card.addEventListener('click', mtLockedClick);
+    } else {
+      const pct = score ? score.pct : 0;
+      const barColor = pct>=80 ? 'green':'';
+      const scoreHtml = score
+        ? '<div class="mt-lvl-score" style="color:'+(pct>=80?'var(--green)':'var(--red)')+'">'+pct+'%</div>'
+        : '<div class="mt-lvl-score" style="color:var(--muted)">—</div>';
+      card.innerHTML = '<div class="mt-lvl-num">'+lv.num+'</div><div class="mt-lvl-lbl">ধাপ '+lv.num+'</div>'+scoreHtml+'<div class="mt-lvl-bar"><div class="mt-lvl-bar-fill '+barColor+'" style="width:'+pct+'%"></div></div>';
+      card.addEventListener('click', function(){ mtStart(lv.num); });
+    }
+    grid.appendChild(card);
+  });
+}
+
+function mtLockedClick(){
+  // brief shake feedback
+  const grid = document.getElementById('mt-lvl-grid');
+  grid.style.animation='shake .4s ease';
+  setTimeout(()=>grid.style.animation='',500);
+}
+
+function mtStart(level){
+  mtState.level = level;
+  mtState.qs = mtGetQuestions(level);
+  mtState.cur = 0;
+  mtState.correct = 0;
+  mtState.wrong = 0;
+  mtState.answered = false;
+  document.getElementById('mt-select').style.display='none';
+  document.getElementById('mt-result').style.display='none';
+  document.getElementById('mt-test').style.display='block';
+  document.getElementById('mt-lvl-badge').textContent='L'+level;
+  document.getElementById('mt-test-title').textContent=`Level ${level} — Mock Test`;
+  mtRenderQ();
+}
+
+function mtRenderQ(){
+  const q = mtState.qs[mtState.cur];
+  mtState.curQ = q;
+  const total = mtState.qs.length;
+  const cur = mtState.cur;
+  mtState.answered = false;
+
+  // progress
+  const pct = (cur/total)*100;
+  document.getElementById('mt-pb').style.width = pct+'%';
+  document.getElementById('mt-pt').textContent = `${cur+1}/${total}`;
+  document.getElementById('mt-test-sub').textContent = `প্রশ্ন ${cur+1} / ${total}`;
+
+  // type badge
+  const typeBadge = document.getElementById('mt-qtype');
+  if(q.type==='reading'){
+    typeBadge.textContent = 'Kanji → Reading';
+    typeBadge.className = 'mt-q-type reading';
+    document.getElementById('mt-ql').textContent = 'নিচের বাক্যে চিহ্নিত Kanji-এর পড়া কোনটি?';
+  } else {
+    typeBadge.textContent = 'Hiragana → Kanji';
+    typeBadge.className = 'mt-q-type kanji';
+    document.getElementById('mt-ql').textContent = 'নিচের বাক্যে চিহ্নিত শব্দের সঠিক Kanji কোনটি?';
+  }
+
+  // sentence with highlighted target
+  const escaped = q.sentence.replace(
+    `「${q.target}」`,
+    `「<span class="target">${q.target}</span>」`
+  );
+  document.getElementById('mt-sentence').innerHTML = escaped;
+
+  // options — shuffle
+  const opts = [...q.opts].sort(()=>Math.random()-.5);
+  const og = document.getElementById('mt-og');
+  og.innerHTML = '';
+  opts.forEach((o,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.id = 'mt-opt-'+i;
+    btn.dataset.choice = o;
+    btn.dataset.answer = q.answer;
+    btn.innerHTML = '<div class="mt-opt-text">'+o+'</div><span class="opt-tick">✅</span>';
+    btn.addEventListener('click', function(){ mtSelect(this); });
+    og.appendChild(btn);
+  });
+
+  document.getElementById('mt-fb').className = 'fb';
+  document.getElementById('mt-fb').innerHTML = '';
+  document.getElementById('mt-nb').style.display = 'none';
+}
+
+function mtSelect(btn){
+  if(mtState.answered) return;
+  mtState.answered = true;
+  const chosen = btn.dataset.choice;
+  const answer = btn.dataset.answer;
+  const correct = chosen === answer;
+  const btns = document.querySelectorAll('#mt-og .opt');
+  btns.forEach(b=>b.disabled=true);
+  const fb = document.getElementById('mt-fb');
+
+  if(correct){
+    btn.classList.add('correct');
+    mtState.correct++;
+    fb.className='fb fb-ok show';
+    const m = mtState.curQ.meaning ? ' — <span style="color:#a0ffc0;font-size:11px">অর্থ: '+mtState.curQ.meaning+'</span>' : '';
+    fb.innerHTML='✅ <b>সঠিক!</b> উত্তর: '+answer+m;
+  } else {
+    btn.classList.add('wrong');
+    btns.forEach(b=>{
+      if(b.dataset.choice===answer) b.classList.add('correct');
+    });
+    mtState.wrong++;
+    fb.className='fb fb-no show';
+    const m = mtState.curQ.meaning ? ' — <span style="font-size:11px">অর্থ: '+mtState.curQ.meaning+'</span>' : '';
+    fb.innerHTML='❌ <b>ভুল!</b> সঠিক উত্তর: <b>'+answer+'</b>'+m;
+  }
+
+  const nb = document.getElementById('mt-nb');
+  nb.style.display='block';
+  nb.textContent = (mtState.cur+1 >= mtState.qs.length) ? 'ফলাফল দেখো 🏆' : 'পরের প্রশ্ন →';
+}
+
+function mtNext(){
+  mtState.cur++;
+  if(mtState.cur >= mtState.qs.length){
+    mtShowResult();
+  } else {
+    document.getElementById('mt-nb').style.display='none';
+    document.getElementById('mt-fb').className='fb';
+    mtRenderQ();
+  }
+}
+
+function mtShowResult(){
+  document.getElementById('mt-test').style.display='none';
+  const total = mtState.qs.length;
+  const c = mtState.correct;
+  const pct = Math.round((c/total)*100);
+  const passed = pct>=80;
+
+  // save
+  const key='l'+mtState.level;
+  const prev = mtState.scores[key];
+  if(!prev || pct > prev.pct){
+    mtState.scores[key]={pct,c,total};
+    mtSaveScores();
+  }
+
+  // emoji
+  let emoji='😞', title='আবার চেষ্টা করো', sub='';
+  if(pct>=95){emoji='🏆';title='অসাধারণ!';}
+  else if(pct>=80){emoji='🎉';title='পাস! Level খুলে গেছে!';}
+  else if(pct>=60){emoji='😊';title='মোটামুটি ভালো';}
+  else if(pct>=40){emoji='😐';title='আরো পড়া দরকার';}
+
+  document.getElementById('mt-re').textContent=emoji;
+  const pctEl=document.getElementById('mt-pct');
+  pctEl.textContent=pct+'%';
+  pctEl.className='mt-pct '+(passed?'pass':'fail');
+  document.getElementById('mt-rt').textContent=title;
+  document.getElementById('mt-rs').textContent=`${c} / ${total} সঠিক — Level ${mtState.level}`;
+  document.getElementById('mt-rd').textContent=`সঠিক: ${c}   ভুল: ${mtState.wrong}`;
+
+  const unlockEl=document.getElementById('mt-unlock');
+  if(passed){
+    const nextLvl=mtState.level+1;
+    unlockEl.className='mt-unlock-msg pass';
+    unlockEl.textContent = nextLvl<=15 ? `🔓 Level ${nextLvl} এখন উন্মুক্ত!` : '🎓 সব Level সম্পন্ন!';
+  } else {
+    unlockEl.className='mt-unlock-msg fail';
+    unlockEl.textContent=`⚠️ পরের Level খুলতে ৮০% দরকার। আরো ${80-pct}% বাড়াতে হবে।`;
+  }
+
+  document.getElementById('mt-result').style.display='block';
+  mtRenderSelect(); // update level grid in background
+}
+
+function mtRetry(){
+  document.getElementById('mt-result').style.display='none';
+  mtStart(mtState.level);
+}
+
+function mtBackToSelect(){
+  document.getElementById('mt-result').style.display='none';
+  document.getElementById('mt-test').style.display='none';
+  document.getElementById('mt-select').style.display='block';
+  mtRenderSelect();
+}
+
+function mtExitConfirm(){
+  if(confirm('পরীক্ষা ছেড়ে যাবেন? আপনার অগ্রগতি সংরক্ষিত হবে না।')){
+    document.getElementById('mt-test').style.display='none';
+    document.getElementById('mt-select').style.display='block';
+    mtRenderSelect();
+  }
+}
+
+// INIT mock test
+mtRenderSelect();
+</script>
+
+</body>
+</html>
