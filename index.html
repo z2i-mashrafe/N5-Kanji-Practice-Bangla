@@ -238,6 +238,25 @@ body::before{
   padding:13px 30px;font-size:14px;font-weight:700;cursor:pointer;min-height:48px;
 }
 
+/* ── MOTIVATION QUOTE ── */
+.mqbox{
+  margin:18px 0 4px;
+  background:linear-gradient(135deg,rgba(96,184,240,.07),rgba(136,144,248,.07));
+  border:1px solid rgba(96,184,240,.18);
+  border-left:3px solid var(--gold);
+  border-radius:var(--rxs);
+  padding:13px 15px;
+  text-align:left;
+  animation:fadeIn .5s ease;
+}
+.mq-text{
+  font-size:13px;font-style:italic;color:var(--text);line-height:1.6;
+  margin-bottom:6px;
+}
+.mq-text::before{content:'\201C';font-size:20px;color:var(--gold);line-height:0;vertical-align:-4px;margin-right:2px;}
+.mq-text::after{content:'\201D';font-size:20px;color:var(--gold);line-height:0;vertical-align:-4px;margin-left:2px;}
+.mq-author{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--gold);text-align:right;}
+
 /* ── REFERENCE ── */
 .ref{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rsm);padding:11px;margin-top:12px;}
 .ref-ttl{font-family:var(--jp);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
@@ -254,6 +273,29 @@ body::before{
 .cri-k{font-family:var(--jp);font-size:20px;font-weight:700;color:var(--text);}
 .cri-r{font-family:var(--jp);font-size:8px;color:var(--teal);margin-top:1px;}
 .cri-m{font-size:9px;color:var(--light);margin-top:2px;font-weight:600;}
+
+/* ── REFERENCE SELECT MODE ── */
+.ref.selmode .ri{border-color:var(--bdr2);}
+.ref.selmode .ri.picked{border-color:var(--gold);background:var(--goldf);}
+.ref.selmode .cri.picked{border-color:var(--teal);background:var(--tealf);}
+.ri.picked::after,.cri.picked::after{content:'✓';position:absolute;}
+.ri{position:relative;}.cri{position:relative;}
+.ri-check,.cri-check{
+  position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;
+  background:var(--gold);color:#0a1020;font-size:9px;font-weight:900;
+  display:none;align-items:center;justify-content:center;line-height:1;
+}
+.cri-check{background:var(--teal);}
+.ri.picked .ri-check,.cri.picked .cri-check{display:flex;}
+.sel-bar{
+  display:none;align-items:center;justify-content:space-between;gap:8px;
+  margin-bottom:9px;flex-wrap:wrap;
+}
+.sel-bar.show{display:flex;}
+.sel-bar-l{display:flex;gap:5px;flex-wrap:wrap;}
+.sel-count{font-size:11px;color:var(--muted);white-space:nowrap;}
+.sel-count b{color:var(--gold);}
+.sel-count.teal b{color:var(--teal);}
 
 /* ── RADICAL PAGE ── */
 .rad-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px;}
@@ -364,16 +406,7 @@ body::before{
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── KANJI SELECTOR PANEL ── */
-.sel-panel{
-  background:var(--surf);border:1px solid var(--bdr);
-  border-radius:var(--r);padding:14px 12px;margin-bottom:11px;
-  display:none;animation:fadeIn .25s ease;
-}
-.sel-panel.open{display:block;}
-.sel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:6px;}
-.sel-title{font-size:12px;font-weight:700;color:var(--text);}
-.sel-actions{display:flex;gap:5px;flex-wrap:wrap;}
+/* ── KANJI SELECT MODE (inline in reference list) ── */
 .sel-abtn{
   font-size:10px;padding:5px 10px;border-radius:8px;cursor:pointer;
   border:1px solid var(--bdr);background:var(--surf2);color:var(--light);
@@ -383,31 +416,13 @@ body::before{
 .sel-abtn.gold{border-color:var(--gold);color:var(--gold);background:var(--goldf);}
 .sel-abtn.teal{border-color:var(--teal);color:var(--teal);background:var(--tealf);}
 .sel-abtn.red{border-color:var(--red);color:var(--red);background:var(--redf);}
-.sel-count{font-size:11px;color:var(--muted);margin-bottom:9px;}
-.sel-count b{color:var(--gold);}
-.sel-count.teal b{color:var(--teal);}
-.sel-kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:5px;max-height:240px;overflow-y:auto;padding-right:2px;}
-.sel-kgrid::-webkit-scrollbar{width:3px;}
-.sel-kgrid::-webkit-scrollbar-track{background:var(--surf2);border-radius:3px;}
-.sel-kgrid::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px;}
-.sel-k{
-  background:var(--surf2);border:1.5px solid var(--bdr);border-radius:8px;
-  padding:7px 4px;text-align:center;cursor:pointer;
-  transition:border-color .15s,background .15s,transform .12s;
-  user-select:none;
-}
-.sel-k:active{transform:scale(.92);}
-.sel-k.picked{border-color:var(--gold);background:var(--goldf);}
-.sel-k.picked.teal-mode{border-color:var(--teal);background:var(--tealf);}
-.sel-k-char{font-family:var(--jp);font-size:22px;font-weight:900;color:var(--text);line-height:1;}
-.sel-k-read{font-family:var(--jp);font-size:7px;color:var(--muted);margin-top:2px;line-height:1.3;}
-.sel-k-mean{font-size:7.5px;color:var(--light);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sel-start{
   width:100%;margin-top:11px;padding:13px;border:none;border-radius:var(--rsm);
   font-size:14px;font-weight:700;cursor:pointer;min-height:48px;
   background:linear-gradient(135deg,#2a7ec8,#60b8f0);color:#fff;
-  transition:opacity .18s;
+  transition:opacity .18s;display:none;
 }
+.sel-start.show{display:block;animation:fadeIn .25s ease;}
 .sel-start.teal{background:linear-gradient(135deg,#1a7a74,var(--teal));}
 .sel-start:disabled{opacity:.4;cursor:not-allowed;}
 .sel-start:active:not(:disabled){opacity:.85;}
@@ -420,9 +435,12 @@ body::before{
 }
 .sel-toggle-btn:hover,.sel-toggle-btn:active{border-color:var(--gold);color:var(--gold);}
 .sel-toggle-btn.teal-mode:hover,.sel-toggle-btn.teal-mode:active{border-color:var(--teal);color:var(--teal);}
+.sel-toggle-btn.on{border-style:solid;border-color:var(--gold);color:var(--gold);background:var(--goldf);}
+.sel-toggle-btn.teal-mode.on{border-color:var(--teal);color:var(--teal);background:var(--tealf);}
 .sel-toggle-btn .sel-icon{font-size:16px;}
 </style>
 </head>
+
 <body>
 <div class="wm"></div>
 
@@ -497,22 +515,8 @@ body::before{
   <!-- SINGLE KANJI SELECTOR -->
   <button class="sel-toggle-btn" id="p1-sel-toggle" onclick="p1ToggleSel()">
     <span class="sel-icon">🎯</span>
-    <span id="p1-sel-toggle-lbl">নিজে Kanji বেছে নাও (Custom Practice)</span>
-    <span id="p1-sel-chev">▼</span>
+    <span id="p1-sel-toggle-lbl">নিচের লিস্ট থেকে Kanji বেছে নাও (Custom Practice)</span>
   </button>
-  <div class="sel-panel" id="p1-sel-panel">
-    <div class="sel-hdr">
-      <div class="sel-title">🗂️ Kanji Select করো</div>
-      <div class="sel-actions">
-        <button class="sel-abtn gold" onclick="p1SelAll()">সব ✓</button>
-        <button class="sel-abtn red" onclick="p1SelNone()">বাদ ✕</button>
-        <button class="sel-abtn" onclick="p1SelRandom()">র‍্যান্ডম 🎲</button>
-      </div>
-    </div>
-    <div class="sel-count" id="p1-sel-count"><b>0</b> টি selected</div>
-    <div class="sel-kgrid" id="p1-sel-grid"></div>
-    <button class="sel-start" id="p1-sel-start" onclick="p1StartCustom()" disabled>এই Kanji দিয়ে Practice শুরু করো →</button>
-  </div>
 
   <div id="p1-area">
     <div class="gcard">
@@ -533,11 +537,27 @@ body::before{
     <div class="rsub" id="p1-rs"></div>
     <div class="rscore" id="p1-rsc"></div>
     <div class="rdetail" id="p1-rd"></div>
-    <button class="rbtn" onclick="p1Restart()">আবার খেলো 🔄</button>
+    <div class="mqbox" id="p1-mq" style="display:none">
+      <div class="mq-text" id="p1-mq-text"></div>
+      <div class="mq-author" id="p1-mq-author"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+      <button class="rbtn" id="p1-repeat-btn" style="display:none" onclick="p1RepeatCustom()">🔁 এই Kanji দিয়ে আবার Practice করো</button>
+      <button class="rbtn" style="background:var(--surf2);color:var(--muted);border:1.5px solid var(--bdr)" onclick="p1Restart()">🔀 নতুন Kanji দিয়ে শুরু করো</button>
+    </div>
   </div>
-  <div class="ref">
+  <div class="ref" id="p1-ref">
     <div class="ref-ttl">📖 ১৪৫টি N5 Kanji Reference</div>
+    <div class="sel-bar" id="p1-sel-bar">
+      <div class="sel-bar-l">
+        <button class="sel-abtn gold" onclick="p1SelAll()">সব ✓</button>
+        <button class="sel-abtn red" onclick="p1SelNone()">বাদ ✕</button>
+        <button class="sel-abtn" onclick="p1SelRandom()">র‍্যান্ডম 🎲</button>
+      </div>
+      <div class="sel-count" id="p1-sel-count"><b>0</b> টি selected</div>
+    </div>
     <div class="ref-grid" id="p1-rg"></div>
+    <button class="sel-start" id="p1-sel-start" onclick="p1StartCustom()" disabled>এই Kanji দিয়ে Practice শুরু করো →</button>
   </div>
 </div>
 </div>
@@ -560,22 +580,8 @@ body::before{
   <!-- COMPOUND KANJI SELECTOR -->
   <button class="sel-toggle-btn teal-mode" id="p2-sel-toggle" onclick="p2ToggleSel()">
     <span class="sel-icon">🎯</span>
-    <span id="p2-sel-toggle-lbl">নিজে Compound বেছে নাও (Custom Practice)</span>
-    <span id="p2-sel-chev">▼</span>
+    <span id="p2-sel-toggle-lbl">নিচের লিস্ট থেকে Compound বেছে নাও (Custom Practice)</span>
   </button>
-  <div class="sel-panel" id="p2-sel-panel">
-    <div class="sel-hdr">
-      <div class="sel-title">🗂️ Compound Kanji Select করো</div>
-      <div class="sel-actions">
-        <button class="sel-abtn teal" onclick="p2SelAll()">সব ✓</button>
-        <button class="sel-abtn red" onclick="p2SelNone()">বাদ ✕</button>
-        <button class="sel-abtn" onclick="p2SelRandom()">র‍্যান্ডম 🎲</button>
-      </div>
-    </div>
-    <div class="sel-count teal" id="p2-sel-count"><b>0</b> টি selected</div>
-    <div class="sel-kgrid" id="p2-sel-grid"></div>
-    <button class="sel-start teal" id="p2-sel-start" onclick="p2StartCustom()" disabled>এই Compound দিয়ে Practice শুরু করো →</button>
-  </div>
 
   <div id="p2-area">
     <div class="gcard teal">
@@ -595,11 +601,27 @@ body::before{
     <div class="rsub" id="p2-rs"></div>
     <div class="rscore" id="p2-rsc" style="color:var(--teal)"></div>
     <div class="rdetail" id="p2-rd"></div>
-    <button class="rbtn" style="background:linear-gradient(135deg,#2090b8,#50c8e8)" onclick="p2Restart()">আবার খেলো 🔄</button>
+    <div class="mqbox" id="p2-mq" style="display:none">
+      <div class="mq-text" id="p2-mq-text"></div>
+      <div class="mq-author" id="p2-mq-author"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+      <button class="rbtn" id="p2-repeat-btn" style="display:none;background:linear-gradient(135deg,#2090b8,#50c8e8)" onclick="p2RepeatCustom()">🔁 এই Compound দিয়ে আবার Practice করো</button>
+      <button class="rbtn" style="background:var(--surf2);color:var(--muted);border:1.5px solid var(--bdr)" onclick="p2Restart()">🔀 নতুন Compound দিয়ে শুরু করো</button>
+    </div>
   </div>
-  <div class="ref" style="border-color:rgba(48,192,176,.18)">
+  <div class="ref" id="p2-ref" style="border-color:rgba(48,192,176,.18)">
     <div class="ref-ttl" style="color:var(--teal)">📖 ৬৩টি Compound Kanji Reference</div>
+    <div class="sel-bar" id="p2-sel-bar">
+      <div class="sel-bar-l">
+        <button class="sel-abtn teal" onclick="p2SelAll()">সব ✓</button>
+        <button class="sel-abtn red" onclick="p2SelNone()">বাদ ✕</button>
+        <button class="sel-abtn" onclick="p2SelRandom()">র‍্যান্ডম 🎲</button>
+      </div>
+      <div class="sel-count teal" id="p2-sel-count"><b>0</b> টি selected</div>
+    </div>
     <div class="cref-grid" id="p2-rg"></div>
+    <button class="sel-start teal" id="p2-sel-start" onclick="p2StartCustom()" disabled>এই Compound দিয়ে Practice শুরু করো →</button>
   </div>
 </div>
 </div>
@@ -1103,6 +1125,72 @@ const RG=[
    k:[{k:'後',r:'あと・ご',m:'পরে'}]},
 ];
 
+// ── MOTIVATION QUOTES ──
+const QUOTES=[
+  {author:"Benjamin Franklin",quote:"Well done is better than well said."},
+  {author:"Nikola Tesla",quote:"Be alone. That is the secret of invention."},
+  {author:"Albert Einstein",quote:"Never lose a holy curiosity."},
+  {author:"Steve Jobs",quote:"Innovation distinguishes between a leader and a follower."},
+  {author:"Thomas Edison",quote:"Our greatest weakness lies in giving up."},
+  {author:"Elon Musk",quote:"Failure is an option here. If you're not failing, you're not innovating enough."},
+  {author:"Bill Gates",quote:"Patience is a key element of success."},
+  {author:"Warren Buffett",quote:"The best investment you can make is in yourself."},
+  {author:"Jack Ma",quote:"If you don't give up, you still have a chance."},
+  {author:"Jeff Bezos",quote:"What's dangerous is not to evolve."},
+  {author:"Henry Ford",quote:"Obstacles are those frightful things you see when you take your eyes off your goal."},
+  {author:"Leonardo da Vinci",quote:"Simplicity is the ultimate sophistication."},
+  {author:"Aristotle",quote:"Pleasure in the job puts perfection in the work."},
+  {author:"Confucius",quote:"The man who moves a mountain begins by carrying away small stones."},
+  {author:"Nelson Mandela",quote:"Education is the most powerful weapon which you can use to change the world."},
+  {author:"Mahatma Gandhi",quote:"The future depends on what you do today."},
+  {author:"Abraham Lincoln",quote:"I will prepare and someday my chance will come."},
+  {author:"Winston Churchill",quote:"Success consists of going from failure to failure without loss of enthusiasm."},
+  {author:"Martin Luther King Jr.",quote:"If you can't fly, then run."},
+  {author:"Theodore Roosevelt",quote:"Do what you can, with what you have, where you are."},
+  {author:"Bruce Lee",quote:"Knowing is not enough, we must apply."},
+  {author:"Muhammad Ali",quote:"Don't count the days, make the days count."},
+  {author:"Michael Jordan",quote:"Some people want it to happen, some wish it would happen, others make it happen."},
+  {author:"Kobe Bryant",quote:"Everything negative is an opportunity to rise."},
+  {author:"Cristiano Ronaldo",quote:"Talent without working hard is nothing."},
+  {author:"Usain Bolt",quote:"I trained four years to run nine seconds."},
+  {author:"Roger Federer",quote:"There is no way around hard work."},
+  {author:"Al-Khwarizmi",quote:"Knowledge increases through sharing."},
+  {author:"Ibn Sina",quote:"Knowledge nourishes the soul."},
+  {author:"Al-Biruni",quote:"Curiosity leads to discovery."},
+  {author:"Steve Jobs",quote:"Stay hungry, stay foolish."},
+  {author:"Nikola Tesla",quote:"The present is theirs; the future is mine."},
+  {author:"Albert Einstein",quote:"Imagination is more important than knowledge."},
+  {author:"Thomas Edison",quote:"Genius is one percent inspiration and ninety-nine percent perspiration."},
+  {author:"Marie Curie",quote:"Nothing in life is to be feared, it is only to be understood."},
+  {author:"Stephen Hawking",quote:"Look up at the stars and not down at your feet."},
+  {author:"Mark Zuckerberg",quote:"The biggest risk is not taking any risk."},
+  {author:"Satya Nadella",quote:"Never stop learning."},
+  {author:"Larry Page",quote:"Always deliver more than expected."},
+  {author:"Henry Ford",quote:"Whether you think you can, or you think you can't—you're right."},
+  {author:"Leonardo da Vinci",quote:"Learning never exhausts the mind."},
+  {author:"Aristotle",quote:"We are what we repeatedly do."},
+  {author:"Confucius",quote:"It does not matter how slowly you go as long as you do not stop."},
+  {author:"Socrates",quote:"Know thyself."},
+  {author:"Nelson Mandela",quote:"I never lose. I either win or learn."},
+  {author:"Mahatma Gandhi",quote:"Be the change you wish to see in the world."},
+  {author:"Winston Churchill",quote:"Success is not final, failure is not fatal."},
+  {author:"Bruce Lee",quote:"Be water, my friend."},
+  {author:"Muhammad Ali",quote:"Impossible is nothing."},
+  {author:"Michael Jordan",quote:"I've failed over and over again in my life. And that is why I succeed."},
+  {author:"Kobe Bryant",quote:"Great things come from hard work and perseverance."},
+  {author:"Pelé",quote:"Success is no accident."},
+  {author:"Roger Federer",quote:"There is no way around hard work."},
+  {author:"Albert Einstein",quote:"In the middle of difficulty lies opportunity."},
+  {author:"Warren Buffett",quote:"Risk comes from not knowing what you're doing."},
+  {author:"Nasir al-Din al-Tusi",quote:"Perseverance is the key to mastery."},
+  {author:"Omar Khayyam",quote:"Make the most of today."},
+];
+let _lastQuoteIdx=-1;
+function getRandQuote(){
+  let idx;do{idx=Math.floor(Math.random()*QUOTES.length);}while(idx===_lastQuoteIdx&&QUOTES.length>1);
+  _lastQuoteIdx=idx;return QUOTES[idx];
+}
+
 // ── UTILS ──
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const getWrong=(db,q,n=3)=>shuffle(db.filter(x=>x!==q)).slice(0,n);
@@ -1110,27 +1198,89 @@ const getResult=(c,t)=>{const p=Math.round(c/t*100);if(p>=90)return{e:'🏆',t:'
 const TOTAL=20;
 const PTITLES={1:'Radical Groups',2:'Single Kanji Game',3:'Compound 二字 Game'};
 
+// ── PROGRESS SAVE/RESUME (localStorage) ──
+function p1SaveState(){
+  try{
+    localStorage.setItem('p1_progress',JSON.stringify({
+      qs:p1.qs,cur:p1.cur,score:p1.score,c:p1.c,w:p1.w,streak:p1.streak,ms:p1.ms,mode:p1.mode,customMode:p1CustomMode,picked:[...p1Picked]
+    }));
+  }catch(e){}
+}
+function p1ClearState(){try{localStorage.removeItem('p1_progress');}catch(e){}}
+function p1LoadState(){
+  try{
+    const raw=localStorage.getItem('p1_progress');if(!raw)return false;
+    const s=JSON.parse(raw);
+    if(!s||!s.qs||!s.qs.length||typeof s.cur!=='number'||s.cur>=s.qs.length)return false;
+    p1.qs=s.qs;p1.cur=s.cur;p1.score=s.score;p1.c=s.c;p1.w=s.w;p1.streak=s.streak;p1.ms=s.ms;p1.mode=s.mode;p1.ans=false;
+    p1CustomMode=!!s.customMode;
+    if(Array.isArray(s.picked))p1Picked=new Set(s.picked);
+    ['p1m1','p1m2','p1m3'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('active');e.style.cssText='';});
+    document.getElementById({k2m:'p1m1',k2r:'p1m2',kn2k:'p1m3'}[p1.mode]).classList.add('active');
+    p1Upd();
+    document.getElementById('p1-area').style.display='block';
+    document.getElementById('p1-res').className='result';
+    document.getElementById('p1-mq').style.display='none';
+    document.getElementById('p1-ref').style.display='none';
+    p1Render();
+    return true;
+  }catch(e){return false;}
+}
+function p2SaveState(){
+  try{
+    localStorage.setItem('p2_progress',JSON.stringify({
+      qs:p2.qs,cur:p2.cur,score:p2.score,c:p2.c,w:p2.w,streak:p2.streak,ms:p2.ms,mode:p2.mode,customMode:p2CustomMode,picked:[...p2Picked]
+    }));
+  }catch(e){}
+}
+function p2ClearState(){try{localStorage.removeItem('p2_progress');}catch(e){}}
+function p2LoadState(){
+  try{
+    const raw=localStorage.getItem('p2_progress');if(!raw)return false;
+    const s=JSON.parse(raw);
+    if(!s||!s.qs||!s.qs.length||typeof s.cur!=='number'||s.cur>=s.qs.length)return false;
+    p2.qs=s.qs;p2.cur=s.cur;p2.score=s.score;p2.c=s.c;p2.w=s.w;p2.streak=s.streak;p2.ms=s.ms;p2.mode=s.mode;p2.ans=false;
+    p2CustomMode=!!s.customMode;
+    if(Array.isArray(s.picked))p2Picked=new Set(s.picked);
+    ['p2m1','p2m2','p2m3'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('active');e.style.cssText='';});
+    const btn=document.getElementById({c2m:'p2m1',m2c:'p2m2',c2r:'p2m3'}[p2.mode]);
+    btn.classList.add('active');
+    if(p2.mode==='c2m'){btn.style.borderColor='var(--teal)';btn.style.color='var(--teal)';btn.style.background='var(--tealf)';}
+    p2Upd();
+    document.getElementById('p2-area').style.display='block';
+    document.getElementById('p2-res').className='result';
+    document.getElementById('p2-mq').style.display='none';
+    document.getElementById('p2-ref').style.display='none';
+    p2Render();
+    return true;
+  }catch(e){return false;}
+}
+
 // ── P1 SINGLE ──
 let p1={mode:'k2m',qs:[],cur:0,score:0,c:0,w:0,streak:0,ms:0,ans:false};
 let p1CustomMode=false;
+let p1SelMode=false;
 let p1Picked=new Set();
 function p1ToggleSel(){
-  const panel=document.getElementById('p1-sel-panel');
-  const chev=document.getElementById('p1-sel-chev');
-  const open=panel.classList.toggle('open');
-  chev.textContent=open?'▲':'▼';
-  if(open && panel.dataset.built!=='1'){
-    document.getElementById('p1-sel-grid').innerHTML=DB1.map((k,i)=>
-      `<div class="sel-k" id="p1-sk${i}" onclick="p1ToggleK(${i})">
-        <div class="sel-k-char">${k.k}</div>
-        <div class="sel-k-read">${k.r.split('・')[0]}</div>
-        <div class="sel-k-mean">${k.m}</div>
-      </div>`).join('');
-    panel.dataset.built='1';
-  }
+  p1SelMode=!p1SelMode;
+  const btn=document.getElementById('p1-sel-toggle');
+  const lbl=document.getElementById('p1-sel-toggle-lbl');
+  const bar=document.getElementById('p1-sel-bar');
+  const ref=document.getElementById('p1-ref');
+  btn.classList.toggle('on',p1SelMode);
+  bar.classList.toggle('show',p1SelMode);
+  ref.classList.toggle('selmode',p1SelMode);
+  lbl.textContent=p1SelMode?'Select বন্ধ করো':'নিচের লিস্ট থেকে Kanji বেছে নাও (Custom Practice)';
+  document.getElementById('p1-sel-start').classList.toggle('show',p1SelMode);
+  if(!p1SelMode){p1SelNone();}
+  else{ref.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function p1RefClick(i,kanji){
+  if(p1SelMode){p1ToggleK(i);}
+  else{kmodalShow(kanji,'#9060d0');}
 }
 function p1ToggleK(i){
-  const el=document.getElementById('p1-sk'+i);
+  const el=document.getElementById('p1-ri'+i);
   if(p1Picked.has(i)){p1Picked.delete(i);el.classList.remove('picked');}
   else{p1Picked.add(i);el.classList.add('picked');}
   p1UpdSelCount();
@@ -1141,19 +1291,19 @@ function p1UpdSelCount(){
 }
 function p1SelAll(){
   p1Picked=new Set(DB1.map((_,i)=>i));
-  document.querySelectorAll('#p1-sel-grid .sel-k').forEach(e=>e.classList.add('picked'));
+  document.querySelectorAll('#p1-rg .ri').forEach(e=>e.classList.add('picked'));
   p1UpdSelCount();
 }
 function p1SelNone(){
   p1Picked.clear();
-  document.querySelectorAll('#p1-sel-grid .sel-k').forEach(e=>e.classList.remove('picked'));
+  document.querySelectorAll('#p1-rg .ri').forEach(e=>e.classList.remove('picked'));
   p1UpdSelCount();
 }
 function p1SelRandom(){
   p1SelNone();
   const n=Math.min(10,DB1.length);
   const idxs=shuffle(DB1.map((_,i)=>i)).slice(0,n);
-  idxs.forEach(i=>{p1Picked.add(i);document.getElementById('p1-sk'+i).classList.add('picked');});
+  idxs.forEach(i=>{p1Picked.add(i);document.getElementById('p1-ri'+i).classList.add('picked');});
   p1UpdSelCount();
 }
 function p1StartCustom(){
@@ -1162,7 +1312,38 @@ function p1StartCustom(){
   const chosen=[...p1Picked].map(i=>DB1[i]);
   p1.qs=shuffle([...chosen]);
   p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
-  p1Upd();document.getElementById('p1-area').style.display='block';document.getElementById('p1-res').className='result';p1Render();
+  // close sel mode UI without clearing picked
+  if(p1SelMode){
+    p1SelMode=false;
+    document.getElementById('p1-sel-toggle').classList.remove('on');
+    document.getElementById('p1-sel-bar').classList.remove('show');
+    document.getElementById('p1-ref').classList.remove('selmode');
+    document.getElementById('p1-sel-toggle-lbl').textContent='নিচের লিস্ট থেকে Kanji বেছে নাও (Custom Practice)';
+    document.getElementById('p1-sel-start').classList.remove('show');
+  }
+  p1Upd();
+  document.getElementById('p1-area').style.display='block';
+  document.getElementById('p1-res').className='result';
+  document.getElementById('p1-mq').style.display='none';
+  document.getElementById('p1-ref').style.display='none';
+  p1Render();
+  document.getElementById('p1-area').scrollIntoView({behavior:'smooth',block:'start'});
+  p1SaveState();
+}
+function p1RepeatCustom(){
+  p1CustomMode=true;
+  const chosen=[...p1Picked].map(i=>DB1[i]);
+  p1.qs=shuffle([...chosen]);
+  p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
+  p1Upd();
+  document.getElementById('p1-res').className='result';
+  document.getElementById('p1-mq').style.display='none';
+  document.getElementById('p1-repeat-btn').style.display='none';
+  document.getElementById('p1-area').style.display='block';
+  document.getElementById('p1-ref').style.display='none';
+  p1Render();
+  document.getElementById('p1-area').scrollIntoView({behavior:'smooth',block:'start'});
+  p1SaveState();
 }
 function p1Mode(m){
   p1.mode=m;
@@ -1173,7 +1354,9 @@ function p1Mode(m){
 function p1Restart(){
   p1CustomMode=false;
   p1.qs=shuffle([...DB1]).slice(0,TOTAL);p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
-  p1Upd();document.getElementById('p1-area').style.display='block';document.getElementById('p1-res').className='result';p1Render();
+  p1Upd();document.getElementById('p1-area').style.display='block';document.getElementById('p1-res').className='result';document.getElementById('p1-mq').style.display='none';p1Render();
+  document.getElementById('p1-ref').style.display='block';
+  p1SaveState();
 }
 function p1Upd(){document.getElementById('p1-sc').textContent=p1.score;document.getElementById('p1-c').textContent=p1.c;document.getElementById('p1-w').textContent=p1.w;document.getElementById('p1-st').textContent=p1.streak;}
 function p1Render(){
@@ -1182,15 +1365,17 @@ function p1Render(){
   document.getElementById('p1-pt').textContent=(p1.cur+1)+'/'+tQ;
   const km=document.getElementById('p1-km'),knm=document.getElementById('p1-knm'),rom=document.getElementById('p1-rom'),kh=document.getElementById('p1-kh'),ql=document.getElementById('p1-ql'),og=document.getElementById('p1-og'),fb=document.getElementById('p1-fb'),nb=document.getElementById('p1-nb');
   km.className='kbig';knm.className='kana-big';fb.className='fb';fb.textContent='';nb.className='nbtn';p1.ans=false;
+  // wrong answer pool: use full DB1 always (enough variety), but if custom pool is small use it
+  const wrongPool = (p1CustomMode && p1.qs.length>=4) ? p1.qs : DB1;
   if(p1.mode==='k2m'){
     ql.textContent='এই Kanji টার বাংলা অর্থ কী?';km.style.cssText='';km.textContent=q.k;km.style.display='block';knm.style.display='none';rom.style.display='none';kh.style.display='block';kh.textContent=q.r+' ('+q.ro+')';
-    const opts=shuffle([q,...getWrong(DB1,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
   }else if(p1.mode==='k2r'){
     ql.textContent='এই Kanji টার পড়া কী?';km.style.cssText='';km.textContent=q.k;km.style.display='block';knm.style.display='none';rom.style.display='none';kh.style.display='none';
-    const opts=shuffle([q,...getWrong(DB1,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-kana">${o.r.split('・')[0]}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-kana">${o.r.split('・')[0]}</div><span class="opt-tick">✅</span></button>`).join('');
   }else{
     ql.textContent='এই Kana এর Kanji কোনটি?';km.style.display='none';kh.style.display='none';knm.style.display='block';knm.textContent=q.r.split('・')[0];rom.style.display='block';rom.textContent=q.ro.split('/')[0];
-    const opts=shuffle([q,...getWrong(DB1,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-jp">${o.k}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-jp">${o.k}</div><span class="opt-tick">✅</span></button>`).join('');
   }
 }
 function p1Pick(idx,ok){
@@ -1198,35 +1383,41 @@ function p1Pick(idx,ok){
   if(ok){btns[idx].classList.add('correct');if(p1.mode!=='kn2k')document.getElementById('p1-km').classList.add('pop');else document.getElementById('p1-knm').classList.add('pop');p1.score+=10+p1.streak*2;p1.c++;p1.streak++;if(p1.streak>p1.ms)p1.ms=p1.streak;fb.className='fb fb-ok show';fb.innerHTML=`✅ <b>সঠিক!</b> ${q.k} → ${q.r} = ${q.m}${p1.streak>1?' 🔥 '+p1.streak+' Streak!':''}`;}
   else{btns[idx].classList.add('wrong');btns.forEach(b=>{if(b.getAttribute('onclick').includes('true'))b.classList.add('correct');});if(p1.mode!=='kn2k')document.getElementById('p1-km').classList.add('shake');else document.getElementById('p1-knm').classList.add('shake');p1.w++;p1.streak=0;fb.className='fb fb-no show';fb.innerHTML=`❌ <b>ভুল!</b> ${q.k} → ${q.r} = <b>${q.m}</b>`;}
   p1Upd();const nb=document.getElementById('p1-nb');nb.textContent=p1.cur+1>=p1.qs.length?'ফলাফল দেখো 🏆':'পরের প্রশ্ন →';nb.className='nbtn show';
+  p1SaveState();
 }
 function p1Next(){const tQ=p1.qs.length;
-  p1.cur++;if(p1.cur>=tQ){document.getElementById('p1-area').style.display='none';const r=getResult(p1.c,tQ);document.getElementById('p1-re').textContent=r.e;document.getElementById('p1-rt').textContent=r.t;document.getElementById('p1-rs').textContent=tQ+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p1-rsc').textContent=p1.c+' / '+tQ;document.getElementById('p1-rd').textContent=`স্কোর: ${p1.score} | সঠিক: ${p1.c} | ভুল: ${p1.w} | Streak: ${p1.ms}`;document.getElementById('p1-res').className='result show';return;}
+  p1.cur++;if(p1.cur>=tQ){document.getElementById('p1-area').style.display='none';document.getElementById('p1-ref').style.display='block';const r=getResult(p1.c,tQ);document.getElementById('p1-re').textContent=r.e;document.getElementById('p1-rt').textContent=r.t;document.getElementById('p1-rs').textContent=tQ+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p1-rsc').textContent=p1.c+' / '+tQ;document.getElementById('p1-rd').textContent=`স্কোর: ${p1.score} | সঠিক: ${p1.c} | ভুল: ${p1.w} | Streak: ${p1.ms}`;const q1=getRandQuote();document.getElementById('p1-mq-text').textContent=q1.quote;document.getElementById('p1-mq-author').textContent='— '+q1.author;document.getElementById('p1-mq').style.display='block';document.getElementById('p1-repeat-btn').style.display=p1CustomMode?'block':'none';document.getElementById('p1-res').className='result show';p1ClearState();return;}
   document.getElementById('p1-nb').className='nbtn';document.getElementById('p1-fb').className='fb';document.getElementById('p1-km').className='kbig';document.getElementById('p1-km').style.cssText='';document.getElementById('p1-knm').className='kana-big';p1Render();
+  p1SaveState();
 }
 
 // ── P2 COMPOUND ──
 let p2={mode:'c2m',qs:[],cur:0,score:0,c:0,w:0,streak:0,ms:0,ans:false};
 let p2CustomMode=false;
+let p2SelMode=false;
 let p2Picked=new Set();
 function p2ToggleSel(){
-  const panel=document.getElementById('p2-sel-panel');
-  const chev=document.getElementById('p2-sel-chev');
-  const open=panel.classList.toggle('open');
-  chev.textContent=open?'▲':'▼';
-  if(open && panel.dataset.built!=='1'){
-    document.getElementById('p2-sel-grid').innerHTML=DB2.map((k,i)=>
-      `<div class="sel-k" id="p2-sk${i}" onclick="p2ToggleK(${i})">
-        <div class="sel-k-char" style="font-size:16px">${k.k}</div>
-        <div class="sel-k-read">${k.r}</div>
-        <div class="sel-k-mean">${k.m}</div>
-      </div>`).join('');
-    panel.dataset.built='1';
-  }
+  p2SelMode=!p2SelMode;
+  const btn=document.getElementById('p2-sel-toggle');
+  const lbl=document.getElementById('p2-sel-toggle-lbl');
+  const bar=document.getElementById('p2-sel-bar');
+  const ref=document.getElementById('p2-ref');
+  btn.classList.toggle('on',p2SelMode);
+  bar.classList.toggle('show',p2SelMode);
+  ref.classList.toggle('selmode',p2SelMode);
+  lbl.textContent=p2SelMode?'Select বন্ধ করো':'নিচের লিস্ট থেকে Compound বেছে নাও (Custom Practice)';
+  document.getElementById('p2-sel-start').classList.toggle('show',p2SelMode);
+  if(!p2SelMode){p2SelNone();}
+  else{ref.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function p2RefClick(i,k,r,ro,m){
+  if(p2SelMode){p2ToggleK(i);}
+  else{kmodalShowCompound(k,r,ro,m);}
 }
 function p2ToggleK(i){
-  const el=document.getElementById('p2-sk'+i);
+  const el=document.getElementById('p2-ri'+i);
   if(p2Picked.has(i)){p2Picked.delete(i);el.classList.remove('picked');}
-  else{p2Picked.add(i);el.classList.add('picked');el.classList.add('teal-mode');}
+  else{p2Picked.add(i);el.classList.add('picked');}
   p2UpdSelCount();
 }
 function p2UpdSelCount(){
@@ -1235,19 +1426,19 @@ function p2UpdSelCount(){
 }
 function p2SelAll(){
   p2Picked=new Set(DB2.map((_,i)=>i));
-  document.querySelectorAll('#p2-sel-grid .sel-k').forEach(e=>{e.classList.add('picked');e.classList.add('teal-mode');});
+  document.querySelectorAll('#p2-rg .cri').forEach(e=>e.classList.add('picked'));
   p2UpdSelCount();
 }
 function p2SelNone(){
   p2Picked.clear();
-  document.querySelectorAll('#p2-sel-grid .sel-k').forEach(e=>e.classList.remove('picked'));
+  document.querySelectorAll('#p2-rg .cri').forEach(e=>e.classList.remove('picked'));
   p2UpdSelCount();
 }
 function p2SelRandom(){
   p2SelNone();
   const n=Math.min(10,DB2.length);
   const idxs=shuffle(DB2.map((_,i)=>i)).slice(0,n);
-  idxs.forEach(i=>{p2Picked.add(i);const el=document.getElementById('p2-sk'+i);el.classList.add('picked');el.classList.add('teal-mode');});
+  idxs.forEach(i=>{p2Picked.add(i);document.getElementById('p2-ri'+i).classList.add('picked');});
   p2UpdSelCount();
 }
 function p2StartCustom(){
@@ -1256,7 +1447,38 @@ function p2StartCustom(){
   const chosen=[...p2Picked].map(i=>DB2[i]);
   p2.qs=shuffle([...chosen]);
   p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
-  p2Upd();document.getElementById('p2-area').style.display='block';document.getElementById('p2-res').className='result';p2Render();
+  // close sel mode UI without clearing picked
+  if(p2SelMode){
+    p2SelMode=false;
+    document.getElementById('p2-sel-toggle').classList.remove('on');
+    document.getElementById('p2-sel-bar').classList.remove('show');
+    document.getElementById('p2-ref').classList.remove('selmode');
+    document.getElementById('p2-sel-toggle-lbl').textContent='নিচের লিস্ট থেকে Compound বেছে নাও (Custom Practice)';
+    document.getElementById('p2-sel-start').classList.remove('show');
+  }
+  p2Upd();
+  document.getElementById('p2-area').style.display='block';
+  document.getElementById('p2-res').className='result';
+  document.getElementById('p2-mq').style.display='none';
+  document.getElementById('p2-ref').style.display='none';
+  p2Render();
+  document.getElementById('p2-area').scrollIntoView({behavior:'smooth',block:'start'});
+  p2SaveState();
+}
+function p2RepeatCustom(){
+  p2CustomMode=true;
+  const chosen=[...p2Picked].map(i=>DB2[i]);
+  p2.qs=shuffle([...chosen]);
+  p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
+  p2Upd();
+  document.getElementById('p2-res').className='result';
+  document.getElementById('p2-mq').style.display='none';
+  document.getElementById('p2-repeat-btn').style.display='none';
+  document.getElementById('p2-area').style.display='block';
+  document.getElementById('p2-ref').style.display='none';
+  p2Render();
+  document.getElementById('p2-area').scrollIntoView({behavior:'smooth',block:'start'});
+  p2SaveState();
 }
 function p2Mode(m){
   p2.mode=m;['p2m1','p2m2','p2m3'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('active');e.style.cssText='';});
@@ -1267,7 +1489,9 @@ function p2Mode(m){
 function p2Restart(){
   p2CustomMode=false;
   p2.qs=shuffle([...DB2]).slice(0,Math.min(TOTAL,DB2.length));p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
-  p2Upd();document.getElementById('p2-area').style.display='block';document.getElementById('p2-res').className='result';p2Render();
+  p2Upd();document.getElementById('p2-area').style.display='block';document.getElementById('p2-res').className='result';document.getElementById('p2-mq').style.display='none';p2Render();
+  document.getElementById('p2-ref').style.display='block';
+  p2SaveState();
 }
 function p2Upd(){document.getElementById('p2-sc').textContent=p2.score;document.getElementById('p2-c').textContent=p2.c;document.getElementById('p2-w').textContent=p2.w;document.getElementById('p2-st').textContent=p2.streak;}
 function p2Render(){
@@ -1275,15 +1499,16 @@ function p2Render(){
   document.getElementById('p2-pb').style.width=(p2.cur/tQ*100)+'%';document.getElementById('p2-pt').textContent=(p2.cur+1)+'/'+tQ;
   const cm=document.getElementById('p2-cm'),ck=document.getElementById('p2-ck'),cr=document.getElementById('p2-cr'),og=document.getElementById('p2-og'),fb=document.getElementById('p2-fb'),nb=document.getElementById('p2-nb'),ql=document.getElementById('p2-ql');
   cm.className='comp-big';fb.className='fb';fb.textContent='';nb.className='nbtn teal';p2.ans=false;
+  const wrongPool2 = (p2CustomMode && p2.qs.length>=4) ? p2.qs : DB2;
   if(p2.mode==='c2m'){
     ql.textContent='এই Compound এর বাংলা অর্থ কী?';cm.style.cssText='display:block';cm.textContent=q.k;ck.style.display='block';ck.textContent=q.r;cr.style.display='block';cr.textContent=q.ro;
-    const opts=shuffle([q,...getWrong(DB2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
   }else if(p2.mode==='m2c'){
     ql.textContent='এই অর্থের Compound কোনটি?';cm.style.cssText='display:block;font-family:var(--bn);font-size:24px;color:var(--teal);margin-bottom:10px;line-height:1.5';cm.textContent=q.m;ck.style.display='none';cr.style.display='none';
-    const opts=shuffle([q,...getWrong(DB2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div class="opt-jp" style="font-size:30px">${o.k}</div><div style="font-family:var(--jp);font-size:10px;color:var(--muted);margin-top:2px">${o.r}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div class="opt-jp" style="font-size:30px">${o.k}</div><div style="font-family:var(--jp);font-size:10px;color:var(--muted);margin-top:2px">${o.r}</div><span class="opt-tick">✅</span></button>`).join('');
   }else{
     ql.textContent='এই Compound এর পড়া কী?';cm.style.cssText='display:block';cm.textContent=q.k;ck.style.display='none';cr.style.display='none';
-    const opts=shuffle([q,...getWrong(DB2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div style="font-family:var(--jp);font-size:14px;font-weight:700;color:var(--text)">${o.r}</div><div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:2px">${o.ro}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div style="font-family:var(--jp);font-size:14px;font-weight:700;color:var(--text)">${o.r}</div><div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:2px">${o.ro}</div><span class="opt-tick">✅</span></button>`).join('');
   }
 }
 function p2Pick(idx,ok){
@@ -1291,10 +1516,12 @@ function p2Pick(idx,ok){
   if(ok){btns[idx].classList.add('correct');cm.classList.add('pop');p2.score+=10+p2.streak*2;p2.c++;p2.streak++;if(p2.streak>p2.ms)p2.ms=p2.streak;fb.className='fb fb-ok show';fb.innerHTML=`✅ <b>সঠিক!</b> ${q.k}（${q.r}）= ${q.m}${p2.streak>1?' 🔥 '+p2.streak+' Streak!':''}`;}
   else{btns[idx].classList.add('wrong');btns.forEach(b=>{if(b.getAttribute('onclick').includes('true'))b.classList.add('correct');});cm.classList.add('shake');p2.w++;p2.streak=0;fb.className='fb fb-no show';fb.innerHTML=`❌ <b>ভুল!</b> ${q.k}（${q.r}）= <b>${q.m}</b>`;}
   p2Upd();const nb=document.getElementById('p2-nb');nb.textContent=p2.cur+1>=p2.qs.length?'ফলাফল দেখো 🏆':'পরের প্রশ্ন →';nb.className='nbtn teal show';
+  p2SaveState();
 }
 function p2Next(){
-  p2.cur++;if(p2.cur>=p2.qs.length){document.getElementById('p2-area').style.display='none';const r=getResult(p2.c,p2.qs.length);document.getElementById('p2-re').textContent=r.e;document.getElementById('p2-rt').textContent=r.t;document.getElementById('p2-rs').textContent=p2.qs.length+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p2-rsc').textContent=p2.c+' / '+p2.qs.length;document.getElementById('p2-rd').textContent=`স্কোর: ${p2.score} | সঠিক: ${p2.c} | ভুল: ${p2.w} | Streak: ${p2.ms}`;document.getElementById('p2-res').className='result show';return;}
+  p2.cur++;if(p2.cur>=p2.qs.length){document.getElementById('p2-area').style.display='none';document.getElementById('p2-ref').style.display='block';const r=getResult(p2.c,p2.qs.length);document.getElementById('p2-re').textContent=r.e;document.getElementById('p2-rt').textContent=r.t;document.getElementById('p2-rs').textContent=p2.qs.length+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p2-rsc').textContent=p2.c+' / '+p2.qs.length;document.getElementById('p2-rd').textContent=`স্কোর: ${p2.score} | সঠিক: ${p2.c} | ভুল: ${p2.w} | Streak: ${p2.ms}`;const q2=getRandQuote();document.getElementById('p2-mq-text').textContent=q2.quote;document.getElementById('p2-mq-author').textContent='— '+q2.author;document.getElementById('p2-mq').style.display='block';document.getElementById('p2-repeat-btn').style.display=p2CustomMode?'block':'none';document.getElementById('p2-res').className='result show';p2ClearState();return;}
   document.getElementById('p2-nb').className='nbtn teal';document.getElementById('p2-fb').className='fb';document.getElementById('p2-cm').className='comp-big';document.getElementById('p2-cm').style.cssText='';p2Render();
+  p2SaveState();
 }
 
 // ── P3 RADICALS ──
@@ -1320,8 +1547,8 @@ function p3Search(v){p3Render(v);}
 
 // ── REFS ──
 function renderRefs(){
-  document.getElementById('p1-rg').innerHTML=DB1.map(k=>`<div class="ri" onclick="kmodalShow('${k.k}','#9060d0')" style="cursor:pointer"><div class="ri-k">${k.k}</div><div class="ri-r">${k.r.split('・')[0]}</div><div class="ri-m">${k.m}</div></div>`).join('');
-  document.getElementById('p2-rg').innerHTML=DB2.map(k=>`<div class="cri" onclick="kmodalShowCompound('${k.k}','${k.r}','${k.ro}','${k.m}')" style="cursor:pointer"><div class="cri-k">${k.k}</div><div class="cri-r">${k.r}</div><div class="cri-m">${k.m}</div></div>`).join('');
+  document.getElementById('p1-rg').innerHTML=DB1.map((k,i)=>`<div class="ri" id="p1-ri${i}" onclick="p1RefClick(${i},'${k.k}')"><div class="ri-check">✓</div><div class="ri-k">${k.k}</div><div class="ri-r">${k.r.split('・')[0]}</div><div class="ri-m">${k.m}</div></div>`).join('');
+  document.getElementById('p2-rg').innerHTML=DB2.map((k,i)=>`<div class="cri" id="p2-ri${i}" onclick="p2RefClick(${i},'${k.k}','${k.r}','${k.ro}','${k.m}')"><div class="cri-check">✓</div><div class="cri-k">${k.k}</div><div class="cri-r">${k.r}</div><div class="cri-m">${k.m}</div></div>`).join('');
 }
 
 // ── PAGE SWITCH ──
@@ -1429,7 +1656,9 @@ function kmodalClose(e){
 }
 
 // INIT
-p1Restart();p2Restart();renderRefs();p3Init();
+renderRefs();p3Init();
+if(!p1LoadState())p1Restart();
+if(!p2LoadState())p2Restart();
 </script>
 
 
