@@ -1112,6 +1112,58 @@ const PTITLES={1:'Radical Groups',2:'Single Kanji Game',3:'Compound 二字 Game'
 
 // ── P1 SINGLE ──
 let p1={mode:'k2m',qs:[],cur:0,score:0,c:0,w:0,streak:0,ms:0,ans:false};
+let p1CustomMode=false;
+let p1Picked=new Set();
+function p1ToggleSel(){
+  const panel=document.getElementById('p1-sel-panel');
+  const chev=document.getElementById('p1-sel-chev');
+  const open=panel.classList.toggle('open');
+  chev.textContent=open?'▲':'▼';
+  if(open && panel.dataset.built!=='1'){
+    document.getElementById('p1-sel-grid').innerHTML=DB1.map((k,i)=>
+      `<div class="sel-k" id="p1-sk${i}" onclick="p1ToggleK(${i})">
+        <div class="sel-k-char">${k.k}</div>
+        <div class="sel-k-read">${k.r.split('・')[0]}</div>
+        <div class="sel-k-mean">${k.m}</div>
+      </div>`).join('');
+    panel.dataset.built='1';
+  }
+}
+function p1ToggleK(i){
+  const el=document.getElementById('p1-sk'+i);
+  if(p1Picked.has(i)){p1Picked.delete(i);el.classList.remove('picked');}
+  else{p1Picked.add(i);el.classList.add('picked');}
+  p1UpdSelCount();
+}
+function p1UpdSelCount(){
+  document.getElementById('p1-sel-count').innerHTML=`<b>${p1Picked.size}</b> টি selected`;
+  document.getElementById('p1-sel-start').disabled=p1Picked.size<4;
+}
+function p1SelAll(){
+  p1Picked=new Set(DB1.map((_,i)=>i));
+  document.querySelectorAll('#p1-sel-grid .sel-k').forEach(e=>e.classList.add('picked'));
+  p1UpdSelCount();
+}
+function p1SelNone(){
+  p1Picked.clear();
+  document.querySelectorAll('#p1-sel-grid .sel-k').forEach(e=>e.classList.remove('picked'));
+  p1UpdSelCount();
+}
+function p1SelRandom(){
+  p1SelNone();
+  const n=Math.min(10,DB1.length);
+  const idxs=shuffle(DB1.map((_,i)=>i)).slice(0,n);
+  idxs.forEach(i=>{p1Picked.add(i);document.getElementById('p1-sk'+i).classList.add('picked');});
+  p1UpdSelCount();
+}
+function p1StartCustom(){
+  if(p1Picked.size<4)return;
+  p1CustomMode=true;
+  const chosen=[...p1Picked].map(i=>DB1[i]);
+  p1.qs=shuffle([...chosen]);
+  p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
+  p1Upd();document.getElementById('p1-area').style.display='block';document.getElementById('p1-res').className='result';p1Render();
+}
 function p1Mode(m){
   p1.mode=m;
   ['p1m1','p1m2','p1m3'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('active');e.style.cssText='';});
@@ -1154,6 +1206,58 @@ function p1Next(){const tQ=p1.qs.length;
 
 // ── P2 COMPOUND ──
 let p2={mode:'c2m',qs:[],cur:0,score:0,c:0,w:0,streak:0,ms:0,ans:false};
+let p2CustomMode=false;
+let p2Picked=new Set();
+function p2ToggleSel(){
+  const panel=document.getElementById('p2-sel-panel');
+  const chev=document.getElementById('p2-sel-chev');
+  const open=panel.classList.toggle('open');
+  chev.textContent=open?'▲':'▼';
+  if(open && panel.dataset.built!=='1'){
+    document.getElementById('p2-sel-grid').innerHTML=DB2.map((k,i)=>
+      `<div class="sel-k" id="p2-sk${i}" onclick="p2ToggleK(${i})">
+        <div class="sel-k-char" style="font-size:16px">${k.k}</div>
+        <div class="sel-k-read">${k.r}</div>
+        <div class="sel-k-mean">${k.m}</div>
+      </div>`).join('');
+    panel.dataset.built='1';
+  }
+}
+function p2ToggleK(i){
+  const el=document.getElementById('p2-sk'+i);
+  if(p2Picked.has(i)){p2Picked.delete(i);el.classList.remove('picked');}
+  else{p2Picked.add(i);el.classList.add('picked');el.classList.add('teal-mode');}
+  p2UpdSelCount();
+}
+function p2UpdSelCount(){
+  document.getElementById('p2-sel-count').innerHTML=`<b>${p2Picked.size}</b> টি selected`;
+  document.getElementById('p2-sel-start').disabled=p2Picked.size<4;
+}
+function p2SelAll(){
+  p2Picked=new Set(DB2.map((_,i)=>i));
+  document.querySelectorAll('#p2-sel-grid .sel-k').forEach(e=>{e.classList.add('picked');e.classList.add('teal-mode');});
+  p2UpdSelCount();
+}
+function p2SelNone(){
+  p2Picked.clear();
+  document.querySelectorAll('#p2-sel-grid .sel-k').forEach(e=>e.classList.remove('picked'));
+  p2UpdSelCount();
+}
+function p2SelRandom(){
+  p2SelNone();
+  const n=Math.min(10,DB2.length);
+  const idxs=shuffle(DB2.map((_,i)=>i)).slice(0,n);
+  idxs.forEach(i=>{p2Picked.add(i);const el=document.getElementById('p2-sk'+i);el.classList.add('picked');el.classList.add('teal-mode');});
+  p2UpdSelCount();
+}
+function p2StartCustom(){
+  if(p2Picked.size<4)return;
+  p2CustomMode=true;
+  const chosen=[...p2Picked].map(i=>DB2[i]);
+  p2.qs=shuffle([...chosen]);
+  p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
+  p2Upd();document.getElementById('p2-area').style.display='block';document.getElementById('p2-res').className='result';p2Render();
+}
 function p2Mode(m){
   p2.mode=m;['p2m1','p2m2','p2m3'].forEach(id=>{const e=document.getElementById(id);e.classList.remove('active');e.style.cssText='';});
   const btn=document.getElementById({c2m:'p2m1',m2c:'p2m2',c2r:'p2m3'}[m]);btn.classList.add('active');
