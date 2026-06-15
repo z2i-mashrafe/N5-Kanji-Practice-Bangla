@@ -401,7 +401,101 @@ body::before{
   border-radius:8px;border-left:2px solid var(--gold);text-align:left;
 }
 
-/* ── ANIMATIONS ── */
+/* ── WRONG REVIEW PANEL ── */
+.wrong-review{
+  margin-top:14px;background:var(--surf);border:1px solid rgba(240,112,112,.25);
+  border-top:2px solid var(--red);border-radius:var(--rsm);padding:13px 13px 10px;
+}
+.wr-ttl{
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--red);margin-bottom:10px;display:flex;align-items:center;gap:7px;
+}
+.wr-ttl::after{content:'';flex:1;height:1px;background:rgba(240,112,112,.2);}
+.wr-grid{display:flex;flex-direction:column;gap:6px;}
+.wr-item{
+  background:var(--surf2);border:1px solid rgba(240,112,112,.15);border-left:3px solid var(--red);
+  border-radius:0 var(--rxs) var(--rxs) 0;
+  padding:8px 10px;display:flex;align-items:center;gap:10px;cursor:pointer;
+  transition:border-color .15s,transform .15s;
+}
+.wr-item:active{transform:scale(.97);border-color:rgba(240,112,112,.4);}
+.wr-k{font-family:var(--jp);font-size:26px;font-weight:900;color:var(--red);min-width:36px;text-align:center;line-height:1;}
+.wr-info{flex:1;min-width:0;}
+.wr-r{font-family:var(--jp);font-size:10px;color:var(--teal);margin-bottom:1px;}
+.wr-m{font-size:11px;font-weight:700;color:var(--text);}
+.wr-practice-btn{
+  width:100%;margin-top:10px;padding:11px;border:none;border-radius:var(--rxs);
+  font-size:13px;font-weight:700;cursor:pointer;min-height:44px;
+  background:linear-gradient(135deg,rgba(240,112,112,.8),rgba(200,60,60,.9));
+  color:#fff;transition:opacity .18s;
+}
+.wr-practice-btn:active{opacity:.85;}
+.wr-empty{font-size:12px;color:var(--green);text-align:center;padding:6px 0;}
+
+/* ── WRONG HISTORY (localStorage) MODAL ── */
+.wh-modal-bd{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:flex-end;justify-content:center;
+  padding:0;
+  animation:fadeIn .2s ease;
+}
+.wh-modal-bd.hide{display:none;}
+.wh-modal{
+  background:var(--surf);border:1px solid var(--bdr2);border-bottom:none;
+  border-radius:20px 20px 0 0;width:100%;max-width:480px;
+  max-height:82dvh;display:flex;flex-direction:column;
+  animation:slideUp .25s ease;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.wh-modal-hdr{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 16px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0;
+}
+.wh-modal-ttl{flex:1;font-size:14px;font-weight:700;color:var(--text);}
+.wh-modal-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.wh-modal-close{
+  background:var(--surf2);border:1px solid var(--bdr);border-radius:8px;
+  color:var(--muted);font-size:16px;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+}
+.wh-modal-body{overflow-y:auto;flex:1;padding:12px 14px;}
+.wh-modal-actions{padding:10px 14px;border-top:1px solid var(--bdr);display:flex;gap:8px;flex-shrink:0;}
+.wh-act-btn{
+  flex:1;padding:11px;border:none;border-radius:var(--rxs);
+  font-size:12px;font-weight:700;cursor:pointer;min-height:44px;transition:opacity .18s;
+}
+.wh-act-btn:active{opacity:.8;}
+.wh-act-clr{background:var(--surf2);color:var(--red);border:1px solid rgba(240,112,112,.3);}
+.wh-act-prac{background:linear-gradient(135deg,rgba(240,112,112,.8),rgba(200,60,60,.9));color:#fff;}
+.wh-hist-item{
+  background:var(--surf2);border:1px solid rgba(240,112,112,.15);border-left:3px solid var(--red);
+  border-radius:0 var(--rxs) var(--rxs) 0;
+  padding:9px 11px;margin-bottom:6px;display:flex;align-items:center;gap:10px;
+}
+.wh-hist-k{font-family:var(--jp);font-size:28px;font-weight:900;color:var(--red);min-width:38px;text-align:center;line-height:1;}
+.wh-hist-info{flex:1;}
+.wh-hist-r{font-family:var(--jp);font-size:10px;color:var(--teal);margin-bottom:2px;}
+.wh-hist-m{font-size:12px;font-weight:700;color:var(--text);}
+.wh-hist-cnt{font-size:9px;color:var(--red);background:rgba(240,112,112,.12);border:1px solid rgba(240,112,112,.2);border-radius:10px;padding:2px 7px;white-space:nowrap;flex-shrink:0;}
+.wh-empty{text-align:center;padding:32px 16px;color:var(--muted);font-size:13px;}
+
+/* Radical page wrong-history button */
+.rad-wh-btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;margin-bottom:11px;padding:11px 14px;
+  background:var(--surf);border:1.5px solid rgba(240,112,112,.3);
+  border-radius:var(--rsm);cursor:pointer;
+  font-size:12px;font-weight:700;color:var(--red);
+  transition:all .18s;
+}
+.rad-wh-btn:hover,.rad-wh-btn:active{background:var(--redf);border-color:var(--red);}
+.rad-wh-badge{
+  margin-left:auto;font-family:var(--jp);font-size:9px;font-weight:700;
+  background:var(--red);color:#fff;border-radius:10px;padding:2px 7px;
+}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -443,6 +537,24 @@ body::before{
 
 <body>
 <div class="wm"></div>
+
+<!-- WRONG HISTORY MODAL -->
+<div class="wh-modal-bd hide" id="wh-modal-bd" onclick="if(event.target===this)whModalHide()">
+  <div class="wh-modal">
+    <div class="wh-modal-hdr">
+      <div>
+        <div class="wh-modal-ttl">❌ ভুল করা Kanji History</div>
+        <div class="wh-modal-sub" id="wh-modal-sub">সব session এর ভুল দেখাচ্ছে</div>
+      </div>
+      <div class="wh-modal-close" onclick="whModalHide()">✕</div>
+    </div>
+    <div class="wh-modal-body" id="wh-modal-body"></div>
+    <div class="wh-modal-actions">
+      <button class="wh-act-btn wh-act-clr" onclick="whClearHistory()">🗑️ History মুছে ফেলো</button>
+      <button class="wh-act-btn wh-act-prac" id="wh-prac-btn" onclick="whStartPractice()">⚡ এই Kanji Practice করো</button>
+    </div>
+  </div>
+</div>
 
 <!-- KANJI DETAIL MODAL -->
 <div class="kmodal-backdrop hide" id="kmodal-bd" onclick="kmodalClose(event)">
@@ -489,6 +601,10 @@ body::before{
     <div class="rstat"><div class="rstat-v">১৪৫</div><div class="rstat-l">মোট Kanji</div></div>
     <div class="rstat"><div class="rstat-v" id="p3-oc">০</div><div class="rstat-l">খোলা আছে</div></div>
   </div>
+  <button class="rad-wh-btn" id="rad-wh-btn" onclick="whModalShow()" style="display:none">
+    <span>✗ My Mistake List</span>
+    <span class="rad-wh-badge" id="rad-wh-badge">0</span>
+  </button>
   <input class="rad-search" type="search" id="p3-s"
     placeholder="🔍 Kanji, Reading বা অর্থ খোঁজো..."
     oninput="p3Search(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
@@ -541,9 +657,15 @@ body::before{
       <div class="mq-text" id="p1-mq-text"></div>
       <div class="mq-author" id="p1-mq-author"></div>
     </div>
+    <!-- Wrong Review Panel -->
+    <div class="wrong-review" id="p1-wr" style="display:none">
+      <div class="wr-ttl">❌ এই Session এ ভুল হয়েছে</div>
+      <div class="wr-grid" id="p1-wr-grid"></div>
+      <button class="wr-practice-btn" id="p1-wr-prac-btn" onclick="p1PracticeWrong()">↯ Retry Wrong</button>
+    </div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
-      <button class="rbtn" id="p1-repeat-btn" style="display:none" onclick="p1RepeatCustom()">🔁 এই Kanji দিয়ে আবার Practice করো</button>
-      <button class="rbtn" id="p1-newkanji-btn" style="background:var(--surf2);color:var(--muted);border:1.5px solid var(--bdr)" onclick="p1NewKanjiBtn()">🔀 নতুন Kanji দিয়ে শুরু করো</button>
+      <button class="rbtn" id="p1-repeat-btn" style="display:none" onclick="p1RepeatCustom()">↺ Repeat Set</button>
+      <button class="rbtn" id="p1-newkanji-btn" style="background:var(--surf2);color:var(--muted);border:1.5px solid var(--bdr)" onclick="p1NewKanjiBtn()">⊞ New Start</button>
     </div>
   </div>
   <div class="ref" id="p1-ref">
@@ -605,9 +727,15 @@ body::before{
       <div class="mq-text" id="p2-mq-text"></div>
       <div class="mq-author" id="p2-mq-author"></div>
     </div>
+    <!-- Wrong Review Panel -->
+    <div class="wrong-review" id="p2-wr" style="display:none">
+      <div class="wr-ttl">❌ এই Session এ ভুল হয়েছে</div>
+      <div class="wr-grid" id="p2-wr-grid"></div>
+      <button class="wr-practice-btn" id="p2-wr-prac-btn" onclick="p2PracticeWrong()">↯ Retry Wrong</button>
+    </div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
-      <button class="rbtn" id="p2-repeat-btn" style="display:none;background:linear-gradient(135deg,#2090b8,#50c8e8)" onclick="p2RepeatCustom()">🔁 এই Compound দিয়ে আবার Practice করো</button>
-      <button class="rbtn" id="p2-newkanji-btn" style="background:var(--surf2);color:var(--muted);border:1.5px solid var(--bdr)" onclick="p2NewKanjiBtn()">🔀 নতুন Compound দিয়ে শুরু করো</button>
+      <button class="rbtn" id="p2-repeat-btn" style="display:none;background:linear-gradient(135deg,#2090b8,#50c8e8)" onclick="p2RepeatCustom()">↺ Repeat Set</button>
+      <button class="rbtn" id="p2-newkanji-btn" style="background:var(--surf2);color:var(--muted);border:1.5px solid var(--bdr)" onclick="p2NewKanjiBtn()">⊞ New Start</button>
     </div>
   </div>
   <div class="ref" id="p2-ref" style="border-color:rgba(48,192,176,.18)">
@@ -774,7 +902,7 @@ const DB2=[
   {k:'先週',r:'せんしゅう',ro:'senshuu',m:'গত সপ্তাহ'},{k:'入口',r:'いりぐち',ro:'iriguchi',m:'প্রবেশদ্বার'},
   {k:'出口',r:'でぐち',ro:'deguchi',m:'বাহির দরজা'},{k:'大雨',r:'おおあめ',ro:'ooame',m:'ভারী বৃষ্টি'},
   {k:'車道',r:'しゃどう',ro:'shadou',m:'গাড়ির রাস্তা'},{k:'休日',r:'きゅうじつ',ro:'kyuujitsu',m:'ছুটির দিন'},
-  {k:'生日',r:'せいじつ',ro:'seijitsu',m:'জন্মদিন'},{k:'年前',r:'ねんまえ',ro:'nenmae',m:'বছর আগে'},
+  {k:'生日',r:'せいじつ',ro:'seijitsu',m:'সরল/সৎ'},{k:'年前',r:'ねんまえ',ro:'nenmae',m:'বছর আগে'},
   {k:'電気',r:'でんき',ro:'denki',m:'বিদ্যুৎ/বাতি'},{k:'電話',r:'でんわ',ro:'denwa',m:'টেলিফোন'},
   {k:'大人',r:'おとな',ro:'otona',m:'প্রাপ্তবয়স্ক'},{k:'外国',r:'がいこく',ro:'gaikoku',m:'বিদেশ'},
   {k:'外国人',r:'がいこくじん',ro:'gaikokujin',m:'বিদেশি মানুষ'},{k:'日本語',r:'にほんご',ro:'nihongo',m:'জাপানি ভাষা'},
@@ -1320,7 +1448,7 @@ function p1SelRandom(){
 }
 function p1StartCustom(){
   if(p1Picked.size<4)return;
-  p1CustomMode=true;
+  p1CustomMode=true;p1WrongHistory=[];
   const chosen=[...p1Picked].map(i=>DB1[i]);
   p1.qs=shuffle([...chosen]);
   p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
@@ -1337,13 +1465,14 @@ function p1StartCustom(){
   document.getElementById('p1-area').style.display='block';
   document.getElementById('p1-res').className='result';
   document.getElementById('p1-mq').style.display='none';
+  document.getElementById('p1-wr').style.display='none';
   document.getElementById('p1-ref').style.display='none';
   p1Render();
   document.getElementById('p1-area').scrollIntoView({behavior:'smooth',block:'start'});
   p1SaveState();
 }
 function p1RepeatCustom(){
-  p1CustomMode=true;
+  p1CustomMode=true;p1WrongHistory=[];
   const chosen=[...p1Picked].map(i=>DB1[i]);
   p1.qs=shuffle([...chosen]);
   p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
@@ -1351,6 +1480,7 @@ function p1RepeatCustom(){
   document.getElementById('p1-res').className='result';
   document.getElementById('p1-mq').style.display='none';
   document.getElementById('p1-repeat-btn').style.display='none';
+  document.getElementById('p1-wr').style.display='none';
   document.getElementById('p1-area').style.display='block';
   document.getElementById('p1-ref').style.display='none';
   p1Render();
@@ -1367,9 +1497,8 @@ function p1NewKanjiBtn(){
   document.getElementById('p1-area').style.display='none';
   document.getElementById('p1-res').className='result';
   document.getElementById('p1-mq').style.display='none';
+  document.getElementById('p1-wr').style.display='none';
   document.getElementById('p1-ref').style.display='block';
-  p1ClearState();
-  // auto-enable select mode so a tap on a kanji selects it immediately
   if(!p1SelMode){
     p1SelMode=true;
     document.getElementById('p1-sel-toggle').classList.add('on');
@@ -1387,9 +1516,9 @@ function p1Mode(m){
   p1Restart();
 }
 function p1Restart(){
-  p1CustomMode=false;
+  p1CustomMode=false;p1WrongHistory=[];
   p1.qs=shuffle([...DB1]).slice(0,TOTAL);p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
-  p1Upd();document.getElementById('p1-area').style.display='block';document.getElementById('p1-res').className='result';document.getElementById('p1-mq').style.display='none';p1Render();
+  p1Upd();document.getElementById('p1-area').style.display='block';document.getElementById('p1-res').className='result';document.getElementById('p1-mq').style.display='none';document.getElementById('p1-wr').style.display='none';p1Render();
   document.getElementById('p1-ref').style.display='block';
   p1SaveState();
 }
@@ -1404,23 +1533,23 @@ function p1Render(){
   const wrongPool = (p1CustomMode && p1.qs.length>=4) ? p1.qs : DB1;
   if(p1.mode==='k2m'){
     ql.textContent='এই Kanji টার বাংলা অর্থ কী?';km.style.cssText='';km.textContent=q.k;km.style.display='block';knm.style.display='none';rom.style.display='none';kh.style.display='block';kh.textContent=q.r+' ('+q.ro+')';
-    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}" ${o===q?'data-correct="1"':''}><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
   }else if(p1.mode==='k2r'){
     ql.textContent='এই Kanji টার পড়া কী?';km.style.cssText='';km.textContent=q.k;km.style.display='block';knm.style.display='none';rom.style.display='none';kh.style.display='none';
-    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-kana">${o.r.split('・')[0]}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}" ${o===q?'data-correct="1"':''}><div class="opt-kana">${o.r.split('・')[0]}</div><span class="opt-tick">✅</span></button>`).join('');
   }else{
     ql.textContent='এই Kana এর Kanji কোনটি?';km.style.display='none';kh.style.display='none';knm.style.display='block';knm.textContent=q.r.split('・')[0];rom.style.display='block';rom.textContent=q.ro.split('/')[0];
-    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}"><div class="opt-jp">${o.k}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p1Pick(${i},${o===q})" id="p1o${i}" ${o===q?'data-correct="1"':''}><div class="opt-jp">${o.k}</div><span class="opt-tick">✅</span></button>`).join('');
   }
 }
 function p1Pick(idx,ok){
   if(p1.ans)return;p1.ans=true;const q=p1.qs[p1.cur];const btns=document.querySelectorAll('#p1-og .opt');const fb=document.getElementById('p1-fb');btns.forEach(b=>b.disabled=true);
   if(ok){btns[idx].classList.add('correct');if(p1.mode!=='kn2k')document.getElementById('p1-km').classList.add('pop');else document.getElementById('p1-knm').classList.add('pop');p1.score+=10+p1.streak*2;p1.c++;p1.streak++;if(p1.streak>p1.ms)p1.ms=p1.streak;fb.className='fb fb-ok show';fb.innerHTML=`✅ <b>সঠিক!</b> ${q.k} → ${q.r} = ${q.m}${p1.streak>1?' 🔥 '+p1.streak+' Streak!':''}`;}
-  else{btns[idx].classList.add('wrong');btns.forEach(b=>{if(b.getAttribute('onclick').includes('true'))b.classList.add('correct');});if(p1.mode!=='kn2k')document.getElementById('p1-km').classList.add('shake');else document.getElementById('p1-knm').classList.add('shake');p1.w++;p1.streak=0;fb.className='fb fb-no show';fb.innerHTML=`❌ <b>ভুল!</b> ${q.k} → ${q.r} = <b>${q.m}</b>`;}
+  else{btns[idx].classList.add('wrong');btns.forEach((b,bi)=>{if(b.dataset.correct==='1')b.classList.add('correct');});if(p1.mode!=='kn2k')document.getElementById('p1-km').classList.add('shake');else document.getElementById('p1-knm').classList.add('shake');p1.w++;p1.streak=0;fb.className='fb fb-no show';fb.innerHTML=`❌ <b>ভুল!</b> ${q.k} → ${q.r} = <b>${q.m}</b>`;p1WrongHistory.push(q);}
   p1Upd();const nb=document.getElementById('p1-nb');nb.textContent=p1.cur+1>=p1.qs.length?'ফলাফল দেখো 🏆':'পরের প্রশ্ন →';nb.className='nbtn show';
 }
 function p1Next(){const tQ=p1.qs.length;
-  p1.cur++;if(p1.cur>=tQ){document.getElementById('p1-area').style.display='none';document.getElementById('p1-ref').style.display='block';const r=getResult(p1.c,tQ);document.getElementById('p1-re').textContent=r.e;document.getElementById('p1-rt').textContent=r.t;document.getElementById('p1-rs').textContent=tQ+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p1-rsc').textContent=p1.c+' / '+tQ;document.getElementById('p1-rd').textContent=`স্কোর: ${p1.score} | সঠিক: ${p1.c} | ভুল: ${p1.w} | Streak: ${p1.ms}`;const q1=getRandQuote();document.getElementById('p1-mq-text').textContent=q1.quote;document.getElementById('p1-mq-author').textContent='— '+q1.author;document.getElementById('p1-mq').style.display='block';document.getElementById('p1-repeat-btn').style.display=p1CustomMode?'block':'none';document.getElementById('p1-newkanji-btn').textContent=p1CustomMode?'🎯 নতুন Kanji বেছে নাও':'🔀 নতুন Kanji দিয়ে শুরু করো';document.getElementById('p1-res').className='result show';p1ClearState();return;}
+  p1.cur++;if(p1.cur>=tQ){document.getElementById('p1-area').style.display='none';document.getElementById('p1-ref').style.display=p1CustomMode?'none':'block';const r=getResult(p1.c,tQ);document.getElementById('p1-re').textContent=r.e;document.getElementById('p1-rt').textContent=r.t;document.getElementById('p1-rs').textContent=tQ+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p1-rsc').textContent=p1.c+' / '+tQ;document.getElementById('p1-rd').textContent=`স্কোর: ${p1.score} | সঠিক: ${p1.c} | ভুল: ${p1.w} | Streak: ${p1.ms}`;const q1=getRandQuote();document.getElementById('p1-mq-text').textContent=q1.quote;document.getElementById('p1-mq-author').textContent='— '+q1.author;document.getElementById('p1-mq').style.display='block';document.getElementById('p1-repeat-btn').style.display=p1CustomMode?'block':'none';document.getElementById('p1-newkanji-btn').textContent=p1CustomMode?'⊕ New Select':'⊞ New Start';p1ShowWrongReview();document.getElementById('p1-res').className='result show';p1ClearState();return;}
   document.getElementById('p1-nb').className='nbtn';document.getElementById('p1-fb').className='fb';document.getElementById('p1-km').className='kbig';document.getElementById('p1-km').style.cssText='';document.getElementById('p1-knm').className='kana-big';p1Render();
   p1SaveState();
 }
@@ -1477,7 +1606,7 @@ function p2SelRandom(){
 }
 function p2StartCustom(){
   if(p2Picked.size<4)return;
-  p2CustomMode=true;
+  p2CustomMode=true;p2WrongHistory=[];
   const chosen=[...p2Picked].map(i=>DB2[i]);
   p2.qs=shuffle([...chosen]);
   p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
@@ -1494,13 +1623,14 @@ function p2StartCustom(){
   document.getElementById('p2-area').style.display='block';
   document.getElementById('p2-res').className='result';
   document.getElementById('p2-mq').style.display='none';
+  document.getElementById('p2-wr').style.display='none';
   document.getElementById('p2-ref').style.display='none';
   p2Render();
   document.getElementById('p2-area').scrollIntoView({behavior:'smooth',block:'start'});
   p2SaveState();
 }
 function p2RepeatCustom(){
-  p2CustomMode=true;
+  p2CustomMode=true;p2WrongHistory=[];
   const chosen=[...p2Picked].map(i=>DB2[i]);
   p2.qs=shuffle([...chosen]);
   p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
@@ -1508,6 +1638,7 @@ function p2RepeatCustom(){
   document.getElementById('p2-res').className='result';
   document.getElementById('p2-mq').style.display='none';
   document.getElementById('p2-repeat-btn').style.display='none';
+  document.getElementById('p2-wr').style.display='none';
   document.getElementById('p2-area').style.display='block';
   document.getElementById('p2-ref').style.display='none';
   p2Render();
@@ -1524,9 +1655,8 @@ function p2NewKanjiBtn(){
   document.getElementById('p2-area').style.display='none';
   document.getElementById('p2-res').className='result';
   document.getElementById('p2-mq').style.display='none';
+  document.getElementById('p2-wr').style.display='none';
   document.getElementById('p2-ref').style.display='block';
-  p2ClearState();
-  // auto-enable select mode so a tap on a compound selects it immediately
   if(!p2SelMode){
     p2SelMode=true;
     document.getElementById('p2-sel-toggle').classList.add('on');
@@ -1544,9 +1674,9 @@ function p2Mode(m){
   p2Restart();
 }
 function p2Restart(){
-  p2CustomMode=false;
+  p2CustomMode=false;p2WrongHistory=[];
   p2.qs=shuffle([...DB2]).slice(0,Math.min(TOTAL,DB2.length));p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
-  p2Upd();document.getElementById('p2-area').style.display='block';document.getElementById('p2-res').className='result';document.getElementById('p2-mq').style.display='none';p2Render();
+  p2Upd();document.getElementById('p2-area').style.display='block';document.getElementById('p2-res').className='result';document.getElementById('p2-mq').style.display='none';document.getElementById('p2-wr').style.display='none';p2Render();
   document.getElementById('p2-ref').style.display='block';
   p2SaveState();
 }
@@ -1559,23 +1689,23 @@ function p2Render(){
   const wrongPool2 = (p2CustomMode && p2.qs.length>=4) ? p2.qs : DB2;
   if(p2.mode==='c2m'){
     ql.textContent='এই Compound এর বাংলা অর্থ কী?';cm.style.cssText='display:block';cm.textContent=q.k;ck.style.display='block';ck.textContent=q.r;cr.style.display='block';cr.textContent=q.ro;
-    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}" ${o===q?'data-correct="1"':''}><div class="opt-txt">${o.m}</div><span class="opt-tick">✅</span></button>`).join('');
   }else if(p2.mode==='m2c'){
     ql.textContent='এই অর্থের Compound কোনটি?';cm.style.cssText='display:block;font-family:var(--bn);font-size:24px;color:var(--teal);margin-bottom:10px;line-height:1.5';cm.textContent=q.m;ck.style.display='none';cr.style.display='none';
-    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div class="opt-jp" style="font-size:30px">${o.k}</div><div style="font-family:var(--jp);font-size:10px;color:var(--muted);margin-top:2px">${o.r}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}" ${o===q?'data-correct="1"':''}><div class="opt-jp" style="font-size:30px">${o.k}</div><div style="font-family:var(--jp);font-size:10px;color:var(--muted);margin-top:2px">${o.r}</div><span class="opt-tick">✅</span></button>`).join('');
   }else{
     ql.textContent='এই Compound এর পড়া কী?';cm.style.cssText='display:block';cm.textContent=q.k;ck.style.display='none';cr.style.display='none';
-    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}"><div style="font-family:var(--jp);font-size:14px;font-weight:700;color:var(--text)">${o.r}</div><div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:2px">${o.ro}</div><span class="opt-tick">✅</span></button>`).join('');
+    const opts=shuffle([q,...getWrong(wrongPool2,q)]);og.innerHTML=opts.map((o,i)=>`<button class="opt" onclick="p2Pick(${i},${o===q})" id="p2o${i}" ${o===q?'data-correct="1"':''}><div style="font-family:var(--jp);font-size:14px;font-weight:700;color:var(--text)">${o.r}</div><div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:2px">${o.ro}</div><span class="opt-tick">✅</span></button>`).join('');
   }
 }
 function p2Pick(idx,ok){
   if(p2.ans)return;p2.ans=true;const q=p2.qs[p2.cur];const btns=document.querySelectorAll('#p2-og .opt');const fb=document.getElementById('p2-fb');const cm=document.getElementById('p2-cm');btns.forEach(b=>b.disabled=true);
   if(ok){btns[idx].classList.add('correct');cm.classList.add('pop');p2.score+=10+p2.streak*2;p2.c++;p2.streak++;if(p2.streak>p2.ms)p2.ms=p2.streak;fb.className='fb fb-ok show';fb.innerHTML=`✅ <b>সঠিক!</b> ${q.k}（${q.r}）= ${q.m}${p2.streak>1?' 🔥 '+p2.streak+' Streak!':''}`;}
-  else{btns[idx].classList.add('wrong');btns.forEach(b=>{if(b.getAttribute('onclick').includes('true'))b.classList.add('correct');});cm.classList.add('shake');p2.w++;p2.streak=0;fb.className='fb fb-no show';fb.innerHTML=`❌ <b>ভুল!</b> ${q.k}（${q.r}）= <b>${q.m}</b>`;}
+  else{btns[idx].classList.add('wrong');btns.forEach(b=>{if(b.dataset.correct==='1')b.classList.add('correct');});cm.classList.add('shake');p2.w++;p2.streak=0;fb.className='fb fb-no show';fb.innerHTML=`❌ <b>ভুল!</b> ${q.k}（${q.r}）= <b>${q.m}</b>`;p2WrongHistory.push(q);}
   p2Upd();const nb=document.getElementById('p2-nb');nb.textContent=p2.cur+1>=p2.qs.length?'ফলাফল দেখো 🏆':'পরের প্রশ্ন →';nb.className='nbtn teal show';
 }
 function p2Next(){
-  p2.cur++;if(p2.cur>=p2.qs.length){document.getElementById('p2-area').style.display='none';document.getElementById('p2-ref').style.display='block';const r=getResult(p2.c,p2.qs.length);document.getElementById('p2-re').textContent=r.e;document.getElementById('p2-rt').textContent=r.t;document.getElementById('p2-rs').textContent=p2.qs.length+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p2-rsc').textContent=p2.c+' / '+p2.qs.length;document.getElementById('p2-rd').textContent=`স্কোর: ${p2.score} | সঠিক: ${p2.c} | ভুল: ${p2.w} | Streak: ${p2.ms}`;const q2=getRandQuote();document.getElementById('p2-mq-text').textContent=q2.quote;document.getElementById('p2-mq-author').textContent='— '+q2.author;document.getElementById('p2-mq').style.display='block';document.getElementById('p2-repeat-btn').style.display=p2CustomMode?'block':'none';document.getElementById('p2-newkanji-btn').textContent=p2CustomMode?'🎯 নতুন Compound বেছে নাও':'🔀 নতুন Compound দিয়ে শুরু করো';document.getElementById('p2-res').className='result show';p2ClearState();return;}
+  p2.cur++;if(p2.cur>=p2.qs.length){document.getElementById('p2-area').style.display='none';document.getElementById('p2-ref').style.display=p2CustomMode?'none':'block';const r=getResult(p2.c,p2.qs.length);document.getElementById('p2-re').textContent=r.e;document.getElementById('p2-rt').textContent=r.t;document.getElementById('p2-rs').textContent=p2.qs.length+'টি প্রশ্নের উত্তর দিয়েছ';document.getElementById('p2-rsc').textContent=p2.c+' / '+p2.qs.length;document.getElementById('p2-rd').textContent=`স্কোর: ${p2.score} | সঠিক: ${p2.c} | ভুল: ${p2.w} | Streak: ${p2.ms}`;const q2=getRandQuote();document.getElementById('p2-mq-text').textContent=q2.quote;document.getElementById('p2-mq-author').textContent='— '+q2.author;document.getElementById('p2-mq').style.display='block';document.getElementById('p2-repeat-btn').style.display=p2CustomMode?'block':'none';document.getElementById('p2-newkanji-btn').textContent=p2CustomMode?'⊕ New Select':'⊞ New Start';p2ShowWrongReview();document.getElementById('p2-res').className='result show';p2ClearState();return;}
   document.getElementById('p2-nb').className='nbtn teal';document.getElementById('p2-fb').className='fb';document.getElementById('p2-cm').className='comp-big';document.getElementById('p2-cm').style.cssText='';p2Render();
   p2SaveState();
 }
@@ -1711,8 +1841,198 @@ function kmodalClose(e){
   if(e.target === document.getElementById('kmodal-bd')) kmodalHide();
 }
 
+// ── WRONG HISTORY (localStorage) ──
+// Structure: {k, r, ro, m, count, type:'single'|'compound'}
+const WH_KEY = 'z2i_wrong_history';
+function whLoad(){
+  try{const r=localStorage.getItem(WH_KEY);return r?JSON.parse(r):[];}catch(e){return [];}
+}
+function whSave(arr){
+  try{localStorage.setItem(WH_KEY,JSON.stringify(arr));}catch(e){}
+}
+function whAddItems(items, type){
+  const arr = whLoad();
+  items.forEach(q=>{
+    const key = q.k;
+    const existing = arr.find(x=>x.k===key && x.type===type);
+    if(existing){existing.count=(existing.count||1)+1;}
+    else{arr.push({k:q.k,r:q.r,ro:q.ro||'',m:q.m,count:1,type});}
+  });
+  whSave(arr);
+  whUpdBadge();
+}
+function whUpdBadge(){
+  const arr=whLoad();
+  const el=document.getElementById('rad-wh-badge');
+  const btn=document.getElementById('rad-wh-btn');
+  if(el)el.textContent=arr.length;
+  if(btn)btn.style.display=arr.length>0?'flex':'none';
+}
+function whModalShow(){
+  const arr=whLoad();
+  const body=document.getElementById('wh-modal-body');
+  const sub=document.getElementById('wh-modal-sub');
+  const pracBtn=document.getElementById('wh-prac-btn');
+  sub.textContent=`মোট ${arr.length} টি অনন্য Kanji/Compound ভুল হয়েছে`;
+  if(!arr.length){
+    body.innerHTML=`<div class="wh-empty">🎉 এখনো কোনো ভুল নেই!<br><span style="font-size:11px;margin-top:6px;display:block">Game খেললে ভুল হওয়া Kanji এখানে জমা হবে।</span></div>`;
+    pracBtn.style.display='none';
+  } else {
+    // sort by count desc
+    const sorted=[...arr].sort((a,b)=>(b.count||1)-(a.count||1));
+    body.innerHTML=sorted.map(x=>`
+      <div class="wh-hist-item">
+        <div class="wh-hist-k">${x.k}</div>
+        <div class="wh-hist-info">
+          <div class="wh-hist-r">${x.r}${x.ro?' · '+x.ro:''}</div>
+          <div class="wh-hist-m">${x.m}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">${x.type==='compound'?'🔡 Compound':'📖 Single'}</div>
+        </div>
+        <div class="wh-hist-cnt">×${x.count||1}</div>
+      </div>`).join('');
+    pracBtn.style.display='block';
+  }
+  document.getElementById('wh-modal-bd').classList.remove('hide');
+  document.body.style.overflow='hidden';
+}
+function whModalHide(){
+  document.getElementById('wh-modal-bd').classList.add('hide');
+  document.body.style.overflow='';
+}
+function whClearHistory(){
+  if(!confirm('সব ভুল History মুছে দেবে?'))return;
+  localStorage.removeItem(WH_KEY);
+  whUpdBadge();
+  whModalShow();
+}
+function whStartPractice(){
+  const arr=whLoad();
+  if(!arr.length)return;
+  whModalHide();
+  // separate single vs compound
+  const singles=arr.filter(x=>x.type==='single').map(x=>DB1.find(d=>d.k===x.k)).filter(Boolean);
+  const compounds=arr.filter(x=>x.type==='compound').map(x=>DB2.find(d=>d.k===x.k)).filter(Boolean);
+  if(singles.length>=4){
+    // go to single kanji page with wrong items
+    sw(2);
+    p1CustomMode=true;
+    p1Picked=new Set(singles.map(s=>DB1.indexOf(s)).filter(i=>i>=0));
+    p1.qs=shuffle([...singles]);
+    p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
+    p1WrongHistory=[];
+    p1Upd();
+    document.getElementById('p1-area').style.display='block';
+    document.getElementById('p1-res').className='result';
+    document.getElementById('p1-mq').style.display='none';
+    document.getElementById('p1-wr').style.display='none';
+    document.getElementById('p1-ref').style.display='none';
+    p1Render();
+  } else if(compounds.length>=4){
+    sw(3);
+    p2CustomMode=true;
+    p2Picked=new Set(compounds.map(c=>DB2.indexOf(c)).filter(i=>i>=0));
+    p2.qs=shuffle([...compounds]);
+    p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
+    p2WrongHistory=[];
+    p2Upd();
+    document.getElementById('p2-area').style.display='block';
+    document.getElementById('p2-res').className='result';
+    document.getElementById('p2-mq').style.display='none';
+    document.getElementById('p2-wr').style.display='none';
+    document.getElementById('p2-ref').style.display='none';
+    p2Render();
+  } else {
+    alert('Practice করতে কমপক্ষে ৪টি ভুল Kanji/Compound দরকার।');
+  }
+}
+
+// ── SESSION WRONG HISTORY (per-game session) ──
+let p1WrongHistory=[];
+let p2WrongHistory=[];
+
+function p1ShowWrongReview(){
+  const wr=document.getElementById('p1-wr');
+  const grid=document.getElementById('p1-wr-grid');
+  // deduplicate
+  const seen=new Set();
+  const uniq=p1WrongHistory.filter(q=>{if(seen.has(q.k))return false;seen.add(q.k);return true;});
+  if(!uniq.length){wr.style.display='none';return;}
+  // save to persistent history
+  whAddItems(uniq,'single');
+  grid.innerHTML=uniq.map(q=>`
+    <div class="wr-item" onclick="kmodalShow('${q.k}','#e06060')">
+      <div class="wr-k">${q.k}</div>
+      <div class="wr-info">
+        <div class="wr-r">${q.r} · ${q.ro}</div>
+        <div class="wr-m">${q.m}</div>
+      </div>
+      <span style="font-size:14px;color:var(--muted)">›</span>
+    </div>`).join('');
+  document.getElementById('p1-wr-prac-btn').style.display=uniq.length>=4?'block':'none';
+  wr.style.display='block';
+}
+function p2ShowWrongReview(){
+  const wr=document.getElementById('p2-wr');
+  const grid=document.getElementById('p2-wr-grid');
+  const seen=new Set();
+  const uniq=p2WrongHistory.filter(q=>{if(seen.has(q.k))return false;seen.add(q.k);return true;});
+  if(!uniq.length){wr.style.display='none';return;}
+  whAddItems(uniq,'compound');
+  grid.innerHTML=uniq.map(q=>`
+    <div class="wr-item" onclick="kmodalShowCompound('${q.k}','${q.r}','${q.ro}','${q.m}')">
+      <div class="wr-k" style="font-size:20px">${q.k}</div>
+      <div class="wr-info">
+        <div class="wr-r">${q.r} · ${q.ro}</div>
+        <div class="wr-m">${q.m}</div>
+      </div>
+      <span style="font-size:14px;color:var(--muted)">›</span>
+    </div>`).join('');
+  document.getElementById('p2-wr-prac-btn').style.display=uniq.length>=4?'block':'none';
+  wr.style.display='block';
+}
+
+// Practice only wrong items from this session
+function p1PracticeWrong(){
+  const seen=new Set();
+  const uniq=p1WrongHistory.filter(q=>{if(seen.has(q.k))return false;seen.add(q.k);return true;});
+  if(uniq.length<4){alert('কমপক্ষে ৪টি ভুল Kanji দরকার।');return;}
+  p1CustomMode=true;
+  p1Picked=new Set(uniq.map(q=>DB1.indexOf(q)).filter(i=>i>=0));
+  p1WrongHistory=[];
+  p1.qs=shuffle([...uniq]);
+  p1.cur=0;p1.score=0;p1.c=0;p1.w=0;p1.streak=0;p1.ms=0;p1.ans=false;
+  p1Upd();
+  document.getElementById('p1-area').style.display='block';
+  document.getElementById('p1-res').className='result';
+  document.getElementById('p1-mq').style.display='none';
+  document.getElementById('p1-wr').style.display='none';
+  document.getElementById('p1-ref').style.display='none';
+  p1Render();
+  document.getElementById('p1-area').scrollIntoView({behavior:'smooth',block:'start'});
+  p1SaveState();
+}
+function p2PracticeWrong(){
+  const seen=new Set();
+  const uniq=p2WrongHistory.filter(q=>{if(seen.has(q.k))return false;seen.add(q.k);return true;});
+  if(uniq.length<4){alert('কমপক্ষে ৪টি ভুল Compound দরকার।');return;}
+  p2CustomMode=true;
+  p2Picked=new Set(uniq.map(q=>DB2.indexOf(q)).filter(i=>i>=0));
+  p2WrongHistory=[];
+  p2.qs=shuffle([...uniq]);
+  p2.cur=0;p2.score=0;p2.c=0;p2.w=0;p2.streak=0;p2.ms=0;p2.ans=false;
+  p2Upd();
+  document.getElementById('p2-area').style.display='block';
+  document.getElementById('p2-res').className='result';
+  document.getElementById('p2-mq').style.display='none';
+  document.getElementById('p2-wr').style.display='none';
+  document.getElementById('p2-ref').style.display='none';
+  p2Render();
+  document.getElementById('p2-area').scrollIntoView({behavior:'smooth',block:'start'});
+  p2SaveState();
+}
+
 // INIT
-renderRefs();p3Init();
+renderRefs();p3Init();whUpdBadge();
 if(!p1LoadState())p1Restart();
 if(!p2LoadState())p2Restart();
 </script>
